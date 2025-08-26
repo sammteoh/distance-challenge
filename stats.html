@@ -1,0 +1,40 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <nav id="navbar">
+        <ul>
+            <li><a href="index.html">Home</a></li> | 
+            <li><a href="rank.html">Rank</a></li> | 
+            <li><a class="active" href="stats.html">Stats</a></li>
+        </ul>
+    </nav>
+</head>
+<body>
+    <link rel="stylesheet" href="style.css">
+    <div id="controls">
+        <div>
+        <label for="typeSelect">Type:</label>
+        <select id="typeSelect">
+            <option value="">Select Type</option>
+            <option value="individual">Individual</option>
+            <option value="category">Category</option>
+        </select>
+        </div>
+        <div>
+        <label for="categorySelect" id="categoryLabel" style="display:none;">Category:</label>
+        <select id="categorySelect">
+            <option value="">Select Type</option>
+            <option value="House">House</option>
+            <option value="Gender">Gender</option>
+            <option value="Grade">Grade</option>
+        </select>
+        </div>
+    </div>
+
+    <div id="backButtonContainer"></div>
+
+    <div id="tableContainer" class="table-wrapper"></div>
+    <script src="script.js"></script>
+    <script src="stats.js"></script>
+</body>
+</html>

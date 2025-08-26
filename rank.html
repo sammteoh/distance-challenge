@@ -1,0 +1,43 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <nav id="navbar">
+        <ul>
+            <li><a href="index.html">Home</a></li> | 
+            <li><a class="active" href="rank.html">Rank</a></li> | 
+            <li><a href="stats.html">Stats</a></li>
+        </ul>
+    </nav>
+</head>
+<body>
+    <link rel="stylesheet" href="style.css">
+    <div id="controls">
+        <div>
+        <label for="categorySelect">Category:</label>
+        <select id="categorySelect">
+            <option value="total">All Students</option>
+            <option value="House">House</option>
+            <option value="Gender">Gender</option>
+            <option value="Grade">Grade</option>
+        </select>
+        </div>
+        <div>
+        <label for="metricSelect">Metric:</label>
+        <select id="metricSelect">
+            <option value="totalDistance">Total Distance</option>
+            <option value="averageDistance">Average Distance</option>
+            <option value="standardDeviation">Standard Deviation</option>
+            <option value="maxDistance">Max Distance</option>
+            <option value="minDistance">Min Distance</option>
+            <option value="weeksAboveThreshold">Weeks Above Threshold</option>
+        </select>
+        </div>
+
+        <div><button id="updateTable">Update</button></div>
+    </div>
+
+    <div id="tableContainer" class="tables-wrapper"></div>
+    <script src="script.js"></script>
+    <script src="rank.js"></script>
+</body>
+</html>
