@@ -1,14 +1,29 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-    <nav id="navbar">
-        <ul>
-            <li><a href="index.html">Rank</a></li> | 
-            <li><a class="active" href="stats.html">Stats</a></li>
-        </ul>
-    </nav>
 </head>
 <body>
+    <nav id="navbar">
+        <ul class="nav-center">
+        <li><a href="index.html">Home</a></li> | 
+        <li><a href="rank.html">Rank</a></li> | 
+        <li><a class="active" href="stats.html">Stats</a></li> |
+        <li><a href="about.html">About</a></li>
+        </ul>
+
+        <div class="nav-right">
+        <select id="yearSelect">
+            <option value="2025">2025</option>
+            <option value="2024">2024</option>
+        </select>
+
+        <select id="unitSelect">
+            <option value="kilometers">Kilometers</option>
+            <option value="miles">Miles</option>
+            <option value="laps">Laps</option>
+        </select>
+        </div>
+    </nav>
     <link rel="stylesheet" href="style.css">
     <div id="controls">
         <div>
@@ -28,11 +43,11 @@
             <option value="Grade">Grade</option>
         </select>
         </div>
+        <div id="backButtonContainer"></div>
     </div>
 
-    <div id="backButtonContainer"></div>
 
-    <div id="tableContainer" class="table-wrapper"></div>
+    <div id="statsContainer" class="stats-wrapper"></div>
     <script src="script.js"></script>
     <script src="stats.js"></script>
 </body>
