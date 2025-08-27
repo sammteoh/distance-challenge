@@ -1,42 +1,42 @@
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
-    <nav id="navbar">
-        <ul>
-            <li><a class="active" href="index.html">Rank</a></li> | 
-            <li><a href="stats.html">Stats</a></li>
-        </ul>
-    </nav>
 </head>
 <body>
+    <nav id="navbar">
+        <ul class="nav-center">
+        <li><a class="active" href="index.html">Home</a></li> | 
+        <li><a href="rank.html">Rank</a></li> | 
+        <li><a href="stats.html">Stats</a></li> |
+        <li><a href="about.html">About</a></li>
+        </ul>
+
+        <div class="nav-right">
+        <select id="yearSelect">
+            <option value="2025">2025</option>
+            <option value="2024">2024</option>
+        </select>
+
+        <select id="unitSelect">
+            <option value="kilometers">Kilometers</option>
+            <option value="miles">Miles</option>
+            <option value="laps">Laps</option>
+        </select>
+        </div>
+    </nav>
     <link rel="stylesheet" href="style.css">
-    <div id="controls">
-        <div>
-        <label for="categorySelect">Category:</label>
-        <select id="categorySelect">
-            <option value="total">All Students</option>
-            <option value="House">House</option>
-            <option value="Gender">Gender</option>
-            <option value="Grade">Grade</option>
-        </select>
-        </div>
-        <div>
-        <label for="metricSelect">Metric:</label>
-        <select id="metricSelect">
-            <option value="totalDistance">Total Distance</option>
-            <option value="averageDistance">Average Distance</option>
-            <option value="standardDeviation">Standard Deviation</option>
-            <option value="maxDistance">Max Distance</option>
-            <option value="minDistance">Min Distance</option>
-            <option value="weeksAboveThreshold">Weeks Above Threshold</option>
-        </select>
-        </div>
 
-        <div><button id="updateTable">Update</button></div>
+<div class="home-wrapper">
+    <div id="homeContainer"></div>
+
+    <div class="right-column">
+        <div id="houseContainer"></div>
+        <div id="genderContainer"></div>
+        <div id="gradeContainer"></div>
     </div>
-
-    <div id="tableContainer" class="tables-wrapper"></div>
+</div>
     <script src="script.js"></script>
-    <script src="rank.js"></script>
+    <script src="index.js"></script>
 </body>
 </html>

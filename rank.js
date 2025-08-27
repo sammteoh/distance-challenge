@@ -47,4 +47,3 @@ unitSelect.addEventListener("change", () => {
         updateRankTable();
     });
 });
-

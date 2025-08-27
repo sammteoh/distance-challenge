@@ -1,7 +1,7 @@
-html, body {
-    background-color: white;
-    color: black;
+p {
     text-align: center;
+    width: 50%;
+    margin: 0 auto;
 }
 
 h3 {
@@ -9,12 +9,13 @@ h3 {
 }
 
 table {
-    width: 50%;
+    width: auto;
     margin: 20px auto;
     margin-left: auto;
     margin-right: auto;
     border-collapse: collapse;
 }
+
 
 table th, table td {
     border: 1px solid black;
@@ -50,6 +51,23 @@ select {
     border-collapse: collapse;
 }
 
+.home-wrapper {
+    display: flex;
+    justify-content: center;
+    align-items: flex-start;
+    gap: 20px;
+    position: relative;
+}
+
+.right-column {
+    position: absolute;
+    right: 0;
+    display: flex;
+    flex-direction: column;
+    gap: 20px;
+}
+
+
 .clickable-name {
     cursor: pointer;
     color: black;
@@ -66,15 +84,32 @@ select {
     margin: 5px 0;
 }
 
-ul {
+#controls {
+    display: flex;
+    flex-direction: column;  /* stack Type + Category */
+    justify-content: center;
+    align-items: center;
+    gap: 10px;
+    margin: 20px auto;
+    text-align: center;
+}
+
+#navbar ul {
+    align-items: center;
     list-style-type: none;
     margin: 0;
     padding: 0;
 }
 
+.nav-right {
+    position: absolute;
+    right: 5px;
+    display: flex;
+}   
+
 li {
     display: inline;
-    float: center;
+    float: none;
 }
 
 li a:hover {
@@ -95,4 +130,18 @@ thead {
     position: sticky;
     top: 0;
     background-color: white;
+}
+
+#navbar {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    position: relative;
+    padding: 5px;
+}
+
+#statsContainer {
+    width: 50%;
+    display: flex;
+    margin: 0 auto;
 }
