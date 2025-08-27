@@ -14,8 +14,14 @@ Category Stats: createCategoryStatsTable(containerId, categoryName, categoryType
 
 */
 
+const UNIT_CONVERSIONS = {
+    kilometers: 1,
+    miles: 0.621371,
+    laps: 7
+}
 
 let students = [];
+let currentUnit = "kilometers";
 const updateButton = document.getElementById("updateTable");
 
 function filterStudents(students, categoryKey, categoryValue) {
@@ -46,27 +52,45 @@ function getDistanceValues(student) {
 
 function getTotalDistance(student) {
     const distanceKeys = getDistanceKeys(student);
-    // Return the sum of the values (default to 0 if empty)
-    return distanceKeys.reduce((sum, key) => sum + parseFloat(student[key] || 0), 0);
+    const total = distanceKeys
+        .reduce((sum, key) => sum + (parseFloat(student[key]) || 0), 0);
+    return Number(total.toFixed(2));
 }
 
 function getAverageDistance(student) {
     const distanceKeys = getDistanceKeys(student);
-    return getTotalDistance(student) / distanceKeys.length;
+
+    let weeksWithRuns = 0;
+
+    distanceKeys.forEach(key => {
+        const value = student[key];
+        if (value > 0) {
+            weeksWithRuns++;
+        }
+    });
+    const average = getTotalDistance(student) / weeksWithRuns;
+
+    if (weeksWithRuns === 0) return 0;
+
+    return Number(average.toFixed(2));
 }
 
 function getStandardDeviation(student) {
     const distanceKeys = getDistanceKeys(student);
     const values = getDistanceValues(student);
 
-    let totalDistance = getTotalDistance(student);
-    let mean = totalDistance / distanceKeys.length;
+    let mean = getAverageDistance(student);
+    if (mean === 0) return NaN;
 
     let squaredDiffs = values.map(value => Math.pow(mean - value, 2));
 
     let variance = squaredDiffs.reduce((sum, i) => sum + i, 0) / values.length;
 
-    return Math.sqrt(variance);
+    const standardDeviation = Math.sqrt(variance);
+
+    const cv = (standardDeviation / mean) * 100;
+    
+    return Number(cv.toFixed(2));
 }
 
 function getMaxDistance(student) {
@@ -83,7 +107,7 @@ function getMaxDistance(student) {
         }
     });
 
-    return { date: maxDate, distance: maxDistance };
+    return { date: maxDate.replace("Distance_", ""), distance: maxDistance };
 }
 
 function getMinDistance(student) {
@@ -94,13 +118,21 @@ function getMinDistance(student) {
 
     distanceKeys.forEach(key => {
         const value = Number(student[key] || 0);
-        if (value < minDistance) {
+        if (value < minDistance && value > 0) {
             minDistance = value;
             minDate = key;
         }
     });
 
-    return { date: minDate, distance: minDistance };
+    if (minDistance === Infinity) {
+        minDate = "N/A";
+        minDistance = 0;
+    }
+
+    return { 
+        date: minDate !== "N/A" ? minDate.replace("Distance_", "") : "N/A", 
+        distance: minDistance 
+    };
 }
 
 function weeksAboveThreshold(student, threshold) {
@@ -156,9 +188,11 @@ function getStudentStats(student) {
         { metric: "Average Distance", value: getAverageDistance(student) },
         { metric: "Standard Deviation", value: getStandardDeviation(student) },
         { metric: "Maximum Distance", value: getMaxDistance(student).distance },
+        { metric: "Maximum Distance Date", value: getMaxDistance(student).date },
         { metric: "Minimum Distance", value: getMinDistance(student).distance },
+        { metric: "Minimum Distance Date", value: getMinDistance(student).date },
         { metric: "Weeks Above Threshold", value: weeksAboveThreshold(student) },
-        { metric: "Last Week Improvement (%)", value: lastWeekImprovement(student).toFixed(2) }
+        { metric: "Last Week Improvement (%)", value: lastWeekImprovement(student).toFixed(2) + "%" }
     ]
 }
 
@@ -169,9 +203,9 @@ function getGroupStats(group) {
         { metric: "Average Distance", value: calculateAverageDistance(group) },
         { metric: "Standard Deviation", value: calculateStandardDeviation(group) },
         { metric: "Maximum Distance", value: findMaxDistance(totalsPerDate).total },
-        { metric: "Minimum Distance", value: findMinDistance(totalsPerDate).total },
+        { metric: "Minimum Distance", value: findMinDistance(totalsPerDate).total.toFixed(2) },
         { metric: "Weeks Above Threshold", value: calculateWeeksAboveThreshold(totalsPerDate, 100) },
-        { metric: "Last Week Improvement (%)", value: calculateImprovement(totalsPerDate).toFixed(2) }
+        { metric: "Last Week Improvement (%)", value: calculateImprovement(totalsPerDate).toFixed(2) + "%" }
     ]
 }
 
@@ -179,7 +213,7 @@ function calculateTotalsPerDate(studentsInGroup, distanceKeys) {
     return distanceKeys.map(dateKey => {
         const total = studentsInGroup
             .map(student => Number(student[dateKey] || 0))
-            .reduce((sum, i) => sum + i, 0);
+            .reduce((sum, i) => sum + i, 0)
         return { date: dateKey, total };
     });
 }
@@ -192,7 +226,8 @@ function calculateTotalDistance(studentsInGroup) {
 
 function calculateAverageDistance(studentsInGroup) {
     const totalDistance = calculateTotalDistance(studentsInGroup);
-    return studentsInGroup.length > 0 ? totalDistance / studentsInGroup.length : 0;
+    const average = studentsInGroup.length > 0 ? totalDistance / studentsInGroup.length : 0;
+    return Number(average.toFixed(2));
 }
 
 function calculateStandardDeviation(studentsInGroup) {
@@ -201,7 +236,8 @@ function calculateStandardDeviation(studentsInGroup) {
     const variance = studentsInGroup
         .map(student => Math.pow(getTotalDistance(student) - average, 2))
         .reduce((sum, diff) => sum + diff, 0) / studentsInGroup.length;
-    return Math.sqrt(variance);
+    const standardDeviation = Math.sqrt(variance);
+    return Number(standardDeviation.toFixed(2));
 }
 
 function findMaxDistance(totalsPerDate) {
@@ -251,6 +287,25 @@ function groupByCategory(students, category) {
     return groups;
 }
 
+function rankHomeTable(students, order = "desc") {
+    let studentMetrics = students.map(student => {
+        return {
+            name: student.Name,
+            totalDistance: getTotalDistance(student),
+            improvement: lastWeekImprovement(student)
+        };
+    });
+
+    studentMetrics.sort((a, b) => 
+      order === "asc" ? a.totalDistance - b.totalDistance : b.totalDistance - a.totalDistance
+    );
+
+    studentMetrics.forEach((entry, index) => {
+        entry.rank = index + 1;
+    });
+    return studentMetrics;
+}
+
 function rankAllStudents(students, metricFunc, order) {
     let studentMetrics = students.map(student => {
         return {
@@ -297,11 +352,17 @@ function rankByCategory(students, category, metric, order) {
 }
 
 function rankCategories(categoryKey, metric, order = "desc") {
-    let categoryMetrics = categoryKey.map(category => {
+    const uniqueCategories = [...new Set(students.map(s => s[categoryKey]))];
+
+    const categoryMetrics = uniqueCategories.map(category => {
+        const group = students.filter(s => s[categoryKey] === category);
+        const totalsPerDate = calculateTotalsPerDate(group, getDistanceKeys(students[0]));
+
         return {
-            name: categoryKey.category,
-            metricValue: category[metric]
-        }
+            name: category,
+            metricValue: group.reduce((sum, s) => sum + findFunction(s, metric), 0),
+            improvement: calculateImprovement(totalsPerDate).toFixed(2) + "%"
+        };
     });
 
     categoryMetrics.sort((a, b) =>
@@ -311,9 +372,7 @@ function rankCategories(categoryKey, metric, order = "desc") {
     categoryMetrics.forEach((entry, index) => {
         entry.rank = index + 1;
     });
-
     return categoryMetrics;
-
 }
 
 function createTable(containerId, data, columns) {
@@ -344,15 +403,6 @@ function createTable(containerId, data, columns) {
 
             if (col.key === "name") {
                 td.textContent = rowData[col.key];
-                td.classList.add("clickable-name");
-
-                td.addEventListener("click", () => {
-                    createStudentStatsTable("tableContainer", rowData[col.key])
-
-                    updateButton.textContent = "Back";
-                });
-            } else if (col.key === "metricValue") {
-                td.textContent = Number(rowData[col.key]).toFixed(2);
             } else {
                 td.textContent = rowData[col.key];
             }
@@ -417,7 +467,7 @@ function getGroupColumns(categoryValue, metricKey) {
 }
 
 function findFunction(student, metricKey) {
-    if (metricKey === "Total Distance"|| metricKey === "totalDistance") {
+    if (metricKey === "Total Distance" || metricKey === "totalDistance") {
         return getTotalDistance(student);
     } else if (metricKey === "Average Distance" || metricKey === "averageDistance") {
         return getAverageDistance(student);
@@ -432,10 +482,107 @@ function findFunction(student, metricKey) {
     }
 }
 
-function callAllStudentsTable(metricKey) {
-    const data = rankAllStudents(students, student => findFunction(student, metricKey));
+function createHomeTable(containerId) {
+    const container = document.getElementById(containerId);
+    const data = rankHomeTable(students);
+    const columns = [
+        { label: "Name", key: "name" }, 
+        { label: "Total Distance", key: "totalDistance" }, 
+        { label: "Improvement", key: "improvement" }
+    ];
+    container.innerHTML = "";
+
+    const table = document.createElement("table");
+    table.style.borderCollapse = "collapse";
+
+    const thead = document.createElement("thead");
+    const headerRow = document.createElement("tr");
+    columns.forEach(col => {
+        const th = document.createElement("th");
+        th.textContent = col.label;
+        headerRow.appendChild(th);
+    });
+    thead.appendChild(headerRow);
+    table.appendChild(thead);
+
+    const tbody = document.createElement("tbody");
+    data.forEach(rowData => {
+        const row = document.createElement("tr");
+        columns.forEach(col => {
+            const td = document.createElement("td");
+
+            if (col.key === "name") {
+                td.textContent = rowData[col.key];          
+            } else if (col.key === "totalDistance") {
+                td.textContent = parseFloat(rowData[col.key]).toFixed(2);
+            } else if (col.key === "improvement") {
+                td.textContent = parseFloat(rowData[col.key]).toFixed(1) + "%";
+            } else {
+                td.textContent = rowData[col.key];
+            }
+            row.appendChild(td);
+        });
+        tbody.appendChild(row);
+    });
+    table.appendChild(tbody);
+
+    container.appendChild(table);
+    
+}
+
+function createCategoryHomeTable(containerId, category) {
+    const container = document.getElementById(containerId);
+    const data = rankCategories(`${category}`, "totalDistance");
+
+    const columns = [
+        { label: "Name", key: "name"},
+        { label: "Total Distance", key: "metricValue"},
+        { label: "Improvement", key: "improvement"}
+    ];
+    container.innerHTML = "";
+
+    const table = document.createElement("table");
+    table.style.borderCollapse = "collapse";
+
+    const thead = document.createElement("thead");
+    const headerRow = document.createElement("tr");
+    columns.forEach(col => {
+        const th = document.createElement("th");
+        th.textContent = col.label;
+        headerRow.appendChild(th);
+    });
+    thead.appendChild(headerRow);
+    table.appendChild(thead);
+
+    const tbody = document.createElement("tbody");
+    data.forEach(rowData => {
+        const row = document.createElement("tr");
+        columns.forEach(col => {
+            const td = document.createElement("td");
+
+            if (col.key === "name") {
+                td.textContent = rowData[col.key];        
+            } else if (col.key === "metricValue") {
+                td.textContent = parseFloat(rowData[col.key]).toFixed(2);
+            } else if (col.key === "improvement") {
+                td.textContent = parseFloat(rowData[col.key]).toFixed(1) + "%";
+            } else {
+                td.textContent = rowData[col.key];
+            }
+            row.appendChild(td);
+        });
+        tbody.appendChild(row);
+    });
+    table.appendChild(tbody);
+
+    container.appendChild(table); 
+}
+
+
+function callAllStudentsTable(containerId, metricKey) {
+    const data = rankAllStudents(students, student => findFunction(student, metricKey), order);
     const columns = getIndividualColumns(metricKey);
-    createTable("tableContainer", data, columns);
+    createTable(containerId, data, columns);
 }
 
 function callUniqueValuesTable(containerId, key) {
@@ -482,17 +629,9 @@ function callUniqueValuesTable(containerId, key) {
     container.appendChild(wrapper);
 }
 
-function callGroupRanks(group, metricKey) {
-    let groupStats = calculateGroupStats(students, group);
-
-    const rankedCategories = rankCategories(groupStats, metricKey);
-
-    const columns = getGroupColumns(group, metricKey);
-    createTable("tableContainer", rankedCategories, columns);
-}
-
-function callGroupedStudentTable(categoryKey, categoryValue, metricKey) {
+function callGroupedStudentTable(containerId, categoryKey, categoryValue, metricKey) {
     const filteredStudents = filterStudents(students, categoryKey, categoryValue);
+    let order = "desc";
 
     const tableData = filteredStudents.map(student => ({
         name: student.Name,
@@ -500,7 +639,13 @@ function callGroupedStudentTable(categoryKey, categoryValue, metricKey) {
         metricValue: findFunction(student, metricKey)
     }));
 
-    tableData.sort((a, b) => b.metricValue - a.metricValue);
+    if (metricKey === "Standard Deviation" || metricKey === "standardDeviation") {
+        order = "asc";
+    }
+
+    tableData.sort((a, b) => 
+      order === "asc" ? a.metricValue - b.metricValue : b.metricValue - a.metricValue
+    );
     tableData.forEach((entry, i) => entry.rank = i + 1);
 
     const columns = [
@@ -521,19 +666,19 @@ function callGroupedStudentTable(categoryKey, categoryValue, metricKey) {
     tableDiv.id = tableId;
     wrapper.appendChild(tableDiv);
 
-    document.getElementById("tableContainer").appendChild(wrapper);
+    document.getElementById(containerId).appendChild(wrapper);
     
     createTable(tableId, tableData, columns);
 }
 
-function callAllGroupedStudentTables(categoryKey, metricKey) {
-    const container = document.getElementById("tableContainer");
+function callAllGroupedStudentTables(containerId, categoryKey, metricKey) {
+    const container = document.getElementById(containerId);
     container.innerHTML = "";
 
     const uniqueCategories = [...new Set(students.map(student => student[categoryKey]))];
 
     uniqueCategories.forEach(categoryValue => {
-        callGroupedStudentTable(categoryKey, categoryValue, metricKey);
+        callGroupedStudentTable(containerId, categoryKey, categoryValue, metricKey);
     });
 }
 
@@ -619,26 +764,35 @@ function createCategoryStatsTable(containerId, categoryValue, categoryKey) {
         console.log("change dropdown");
     });
     */
+const yearSelect = document.getElementById("yearSelect");
+const unitSelect = document.getElementById("unitSelect");
+
+function loadData(year, callback) {
+    fetch(`data-${year}.csv`)
+        .then(response => response.text())
+        .then(csvText => {
+            const lines = csvText.trim().split("\n");
+
+            const header = lines[0].trim().split(",");
 
 
-fetch("data.csv")
-    .then(response => response.text())
-    .then(csvText => {
-        // Divide into lines by row
-        const lines = csvText.trim().split("\n");
-        // Declare the first line as 'Header'
-        const header = lines[0].trim().split(",");
+            students = lines.slice(1).map(line => {
+                const values = line.split(",");
+                const student = {};
 
-        // Declare each line after 'Header' as a student Object
-        students = lines.slice(1).map(line => {
-            const values = line.split(",");
-            const student = {};
+                header.forEach((h, i) => {
+                    let num = parseFloat(values[i]);
+                    if (!isNaN(num) && h.startsWith("Distance_")) {
+                        student[h] = num * UNIT_CONVERSIONS[currentUnit];
+                    } else {
+                        student[h] = isNaN(num) ? values[i] : num;
+                    }
+                });
 
-            header.forEach((h, i) => {
-                const num = parseFloat(values[i]);
-                student[h] = isNaN(num) ? values[i] : num;
+                return student;
             });
 
-            return student;
+            if (callback) callback();
         });
-    });
+}
+
