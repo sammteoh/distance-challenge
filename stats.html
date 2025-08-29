@@ -1,53 +1,67 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
+    <link rel="stylesheet" href="style.css">
 </head>
 <body>
-    <nav id="navbar">
-        <ul class="nav-center">
-        <li><a href="index.html">Home</a></li> | 
-        <li><a href="rank.html">Rank</a></li> | 
-        <li><a class="active" href="stats.html">Stats</a></li> |
-        <li><a href="about.html">About</a></li>
-        </ul>
+    <div class="app-container">
+        <aside class="sidebar">
+            <nav class="sidebar-nav">
+                <ul class="nav-links">
+                    <li><a href="index.html">Home</a></li>
+                    <li><a href="rank.html">Rank</a></li>
+                    <li><a class="active" href="stats.html">Stats</a></li>
+                    <li><a href="about.html">About</a></li>
+                </ul>
 
-        <div class="nav-right">
-        <select id="yearSelect">
-            <option value="2025">2025</option>
-            <option value="2024">2024</option>
-        </select>
+                <div class="sidebar-controls">
+                    <div class="control-group">
+                        <label for="yearSelect">Year:</label>
+                        <select id="yearSelect">
+                            <option value="2025">2025</option>
+                            <option value="2024">2024</option>
+                        </select>
+                    </div>
 
-        <select id="unitSelect">
-            <option value="kilometers">Kilometers</option>
-            <option value="miles">Miles</option>
-            <option value="laps">Laps</option>
-        </select>
-        </div>
-    </nav>
-    <link rel="stylesheet" href="style.css">
-    <div id="controls">
-        <div>
-        <label for="typeSelect">Type:</label>
-        <select id="typeSelect">
-            <option value="">Select Type</option>
-            <option value="individual">Individual</option>
-            <option value="category">Category</option>
-        </select>
-        </div>
-        <div>
-        <label for="categorySelect" id="categoryLabel" style="display:none;">Category:</label>
-        <select id="categorySelect">
-            <option value="">Select Type</option>
-            <option value="House">House</option>
-            <option value="Gender">Gender</option>
-            <option value="Grade">Grade</option>
-        </select>
-        </div>
-        <div id="backButtonContainer"></div>
+                    <div class="control-group">
+                        <label for="unitSelect">Unit:</label>
+                        <select id="unitSelect">
+                            <option value="kilometers">Kilometers</option>
+                            <option value="miles">Miles</option>
+                            <option value="laps">Laps</option>
+                        </select>
+                    </div>
+
+
+                    <div id="backButtonContainer"></div>
+                </div>
+            </nav>
+        </aside>
+
+        <main class="main-content">
+            <div class="sorting-controls">
+                <div class="control-group">
+                    <label for="typeSelect">Type:</label>
+                    <select id="typeSelect">
+                        <option value="">Select Type</option>
+                        <option value="individual">Individual</option>
+                        <option value="category">Category</option>
+                    </select>
+                </div>
+
+                <div class="control-group">
+                    <label for="categorySelect" id="categoryLabel" style="display:none;">Category:</label>
+                    <select id="categorySelect">
+                        <option value="">Select Type</option>
+                        <option value="House">House</option>
+                        <option value="Gender">Gender</option>
+                        <option value="Grade">Grade</option>
+                    </select>
+                </div>
+            </div>
+            <div id="statsContainer" class="stats-wrapper"></div>
+        </main>
     </div>
-
-
-    <div id="statsContainer" class="stats-wrapper"></div>
     <script src="script.js"></script>
     <script src="stats.js"></script>
 </body>
