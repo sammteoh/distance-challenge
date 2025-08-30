@@ -2,30 +2,32 @@
 <html lang="en">
 
 <head>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="style.css">
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
 </head>
 <body>
     <nav id="navbar">
         <ul class="nav-center">
-        <li><a class="active" href="index.html">Home</a></li> | 
-        <li><a href="rank.html">Rank</a></li> | 
-        <li><a href="stats.html">Stats</a></li> |
+        <li><a class="active" href="index.html">Home</a></li> 
+        <li><a href="rank.html">Rank</a></li>
+        <li><a href="stats.html">Stats</a></li>
         <li><a href="about.html">About</a></li>
         </ul>
 
         <div class="nav-right">
-        <select id="yearSelect">
-            <option value="2025">2025</option>
-            <option value="2024">2024</option>
-        </select>
+                <select id="yearSelect">
+                    <option value="2025">2025</option>
+                    <option value="2024">2024</option>
+                </select>
 
-        <select id="unitSelect">
-            <option value="kilometers">Kilometers</option>
-            <option value="miles">Miles</option>
-            <option value="laps">Laps</option>
-        </select>
+                <select id="unitSelect">
+                    <option value="kilometers">Kilometers</option>
+                    <option value="miles">Miles</option>
+                    <option value="laps">Laps</option>
+                </select>
         </div>
     </nav>
-    <link rel="stylesheet" href="style.css">
 
 <div class="home-wrapper">
     <div id="homeContainer"></div>
@@ -36,7 +38,7 @@
         <div id="gradeContainer"></div>
     </div>
 </div>
+</body>
     <script src="script.js"></script>
     <script src="index.js"></script>
-</body>
 </html>

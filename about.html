@@ -1,47 +1,46 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="style.css">
 </head>
 <body>
-    <nav id="navbar">
+  <nav id="navbar">
     <ul class="nav-center">
-    <li><a href="index.html">Home</a></li> | 
-    <li><a href="rank.html">Rank</a></li> | 
-    <li><a href="stats.html">Stats</a></li> |
-    <li><a class="active" href="about.html">About</a></li>
+      <li><a href="index.html">Home</a></li>
+      <li><a href="rank.html">Rank</a></li>
+      <li><a href="stats.html">Stats</a></li>
+      <li><a class="active" href="about.html">About</a></li>
     </ul>
-    </nav>
-    <link rel="stylesheet" href="style.css">
-  <h3>Conversion Rates</h3>
+  </nav>
+
+  <div id="aboutContent">
+    <h3>Conversion Rates</h3>
     <p>Kilometer: 1</p>
     <p>Mile: 0.621371</p>
     <p>Lap: 7 (updated Aug 2025)</p>
 
-  <h3>Total Distance</h3>
-  <p>
-    The total distance of a student is calculated by summing the distances run each week. 
-    The total distance of a category (ex. House, Gender, Grade) is calculated by summing the distances of its individual members each week.
-  </p>
-  <h3>Average Distance</h3>
-  <p>
-    The average distance is calculated by dividing the total distance run by the number of weeks where the distance run was greater than zero.  </p>
+    <h3>Total Distance</h3>
+    <p>The total distance of a student is calculated by summing the distances run each week. 
+       The total distance of a category (ex. House, Gender, Grade) is calculated by summing the distances of its individual members each week.</p>
+
+    <h3>Average Distance</h3>
+    <p>The average distance is calculated by dividing the total distance run by the number of weeks where the distance run was greater than zero.</p>
+
     <h3>Standard Deviation (Coefficient of Variation)</h3>
-    <p>
-    The “consistency” of a student is calculated by dividing the standard deviation of a student’s distances per week by the average distance run by the student per week. 
-    The lower the number is, the higher the consistency. The higher the number is, the lower the consistency.
-    </p>
+    <p>The “consistency” of a student is calculated by dividing the standard deviation of a student’s distances per week by the average distance run by the student per week. 
+       The lower the number is, the higher the consistency. The higher the number is, the lower the consistency.</p>
+
     <h3>Max/Min Distance</h3>
-    <p>
-    The maximum distance is the greatest distance run in a single session. The minimum distance is the lowest distance run in a single session.    
-    </p>
+    <p>The maximum distance is the greatest distance run in a single session. The minimum distance is the lowest distance run in a single session.</p>
+
     <h3>Weeks Above Threshold</h3>
-    <p>
-    This metric counts the number of weeks a student has run at least 10 kilometers in a single session.
-    </p>
+    <p>This metric counts the number of weeks a student has run at least 10 kilometers in a single session.</p>
+
     <h3>Improvement</h3>
-    <p>
-    Improvement is calculated by dividing the difference between the current week’s distance and the previous week’s distance by the previous week’s distance as a percentage. 
-    A negative number means deterioration, and a positive number means improvement from the previous week.
-    </p>
+    <p>Improvement is calculated by dividing the difference between the current week’s distance and the previous week’s distance by the previous week’s distance as a percentage. 
+       A negative number means deterioration, and a positive number means improvement from the previous week.</p>
+  </div>
 </body>
+
 </html>

@@ -1,13 +1,16 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="style.css">
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
 </head>
 <body>
     <nav id="navbar">
         <ul class="nav-center">
-        <li><a href="index.html">Home</a></li> | 
-        <li><a href="rank.html">Rank</a></li> | 
-        <li><a class="active" href="stats.html">Stats</a></li> |
+        <li><a href="index.html">Home</a></li>
+        <li><a href="rank.html">Rank</a></li>
+        <li><a class="active" href="stats.html">Stats</a></li>
         <li><a href="about.html">About</a></li>
         </ul>
 
@@ -24,7 +27,6 @@
         </select>
         </div>
     </nav>
-    <link rel="stylesheet" href="style.css">
     <div id="controls">
         <div>
         <label for="typeSelect">Type:</label>
@@ -46,8 +48,9 @@
         <div id="backButtonContainer"></div>
     </div>
 
-
-    <div id="statsContainer" class="stats-wrapper"></div>
+    <div id="dashboardContainer">
+        <div id="statsContainer" class="stats-wrapper"></div>
+    </div>
     <script src="script.js"></script>
     <script src="stats.js"></script>
 </body>

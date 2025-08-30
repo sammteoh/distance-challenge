@@ -2,13 +2,15 @@
 <html lang="en">
 
 <head>
-</head>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="style.css">
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
 <body>
     <nav id="navbar">
         <ul class="nav-center">
-        <li><a href="index.html">Home</a></li> | 
-        <li><a class="active" href="rank.html">Rank</a></li> | 
-        <li><a href="stats.html">Stats</a></li> |
+        <li><a href="index.html">Home</a></li>
+        <li><a class="active" href="rank.html">Rank</a></li>
+        <li><a href="stats.html">Stats</a></li>
         <li><a href="about.html">About</a></li>
         </ul>
 
@@ -25,7 +27,6 @@
         </select>
         </div>
     </nav>
-    <link rel="stylesheet" href="style.css">
     <div id="controls">
         <div>
         <label for="categorySelect">Category:</label>
@@ -47,11 +48,16 @@
             <option value="weeksAboveThreshold">Weeks Above Threshold</option>
         </select>
         </div>
-
-        <div><button id="updateTable">Update</button></div>
     </div>
 
-    <div id="tableContainer" class="tables-wrapper"></div>
+    <div id="dashboardContainer">
+        <div id="tableContainer">
+            <!-- Your table will be here -->
+        </div>
+        <div id="rankedChartsContainer">
+            <!-- Your charts will be rendered here -->
+        </div>
+    </div>
     <script src="script.js"></script>
     <script src="rank.js"></script>
 </body>
