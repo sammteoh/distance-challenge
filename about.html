@@ -3,6 +3,11 @@
 <head>
   <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
   <link rel="stylesheet" href="style.css">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <script src="https://polyfill.io/v3/polyfill.min.js?features=es6"></script>
+  <script id="MathJax-script" async
+    src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js">
+  </script>
 </head>
 <body>
   <nav id="navbar">
@@ -14,11 +19,16 @@
     </ul>
   </nav>
 
-  <div id="aboutContent">
+  <div id="aboutContent" style="text-align: center;">
+    <h2>About</h2>
+
+    <p>This website tracks and displays the results of our school’s Distance Challenge. Every Friday during intramurals, students run, jog, or walk to cover as much distance as possible. We record each student’s weekly distance and calculate totals, averages, and other statistics to provide a complete ranking.</p>
+
+
     <h3>Conversion Rates</h3>
-    <p>Kilometer: 1</p>
-    <p>Mile: 0.621371</p>
-    <p>Lap: 7 (updated Aug 2025)</p>
+    <p class="conversion">Kilometer: 1</p>
+    <p class="conversion">Mile: 0.621371</p>
+    <p class="conversion">Lap: 7 (updated Aug 2025)</p>
 
     <h3>Total Distance</h3>
     <p>The total distance of a student is calculated by summing the distances run each week. 
@@ -26,10 +36,12 @@
 
     <h3>Average Distance</h3>
     <p>The average distance is calculated by dividing the total distance run by the number of weeks where the distance run was greater than zero.</p>
+    <p class="formula">$$\bar{D} = \frac{\text{Total Dist}}{\text{No. of Wks with Dist > 0}}$$</p>
 
     <h3>Standard Deviation (Coefficient of Variation)</h3>
     <p>The “consistency” of a student is calculated by dividing the standard deviation of a student’s distances per week by the average distance run by the student per week. 
        The lower the number is, the higher the consistency. The higher the number is, the lower the consistency.</p>
+    <p class="formula">$$CV = \frac{\sigma}{\mu} \times 100\%$$</p>
 
     <h3>Max/Min Distance</h3>
     <p>The maximum distance is the greatest distance run in a single session. The minimum distance is the lowest distance run in a single session.</p>
@@ -40,6 +52,7 @@
     <h3>Improvement</h3>
     <p>Improvement is calculated by dividing the difference between the current week’s distance and the previous week’s distance by the previous week’s distance as a percentage. 
        A negative number means deterioration, and a positive number means improvement from the previous week.</p>
+    <p class="formula">$$\text{Imp. (%)} = \frac{\text{Curr Dist} - \text{Prev Dist}}{\text{Prev Dist}} \times 100\%$$</p>
   </div>
 </body>
 

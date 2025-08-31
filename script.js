@@ -572,14 +572,14 @@ function createCategoryHomeTable(containerId, category) {
     data.forEach(rowData => {
         const row = document.createElement("tr");
         if (rowData.rank === 1) {
-            row.style.backgroundColor = "rgba(255, 225, 52, 0.5)"; // Gold
+            row.style.backgroundColor = "rgba(255, 225, 52, 0.5)";
         }
 
         columns.forEach(col => {
             const td = document.createElement("td");
 
             if (col.key === "name") {
-                td.textContent = rowData[col.key];        
+                td.textContent = rowData[col.key];
             } else if (col.key === "metricValue") {
                 td.textContent = parseFloat(rowData[col.key]).toFixed(2);
             } else if (col.key === "improvement") {
@@ -648,8 +648,15 @@ function createCategoryHomeTable(containerId, category) {
         wrapper.appendChild(chartCanvas);
 
         const groups = groupByCategory(students, "Gender");
-        const genderLabels = Object.keys(groups);
-        const genderCounts = genderLabels.map(g => groups[g].length);
+        let genderData = Object.keys(groups).map(g => ({
+            gender: g,
+            total: groups[g].reduce((sum, s) => sum + getTotalDistance(s), 0)
+        }));
+
+        genderData.sort((a, b) => a.total - b.total);
+
+        const genderLabels = genderData.map(d => d.gender);
+        const genderTotals = genderData.map(d => d.total);
 
         const genderColors = {
             "Male": "rgba(54, 162, 235, 0.6)",
@@ -664,7 +671,7 @@ function createCategoryHomeTable(containerId, category) {
         const backgroundColors = genderLabels.map(g => genderColors[g] || "rgba(200,200,200,0.5)");
         const borders = genderLabels.map(g => borderColors[g] || "rgba(100,100,100,1)");
 
-        createChart("genderChart", "pie", genderLabels, genderCounts, {
+        createChart("genderChart", "pie", genderLabels, genderTotals, {
             title: "Total Distance by Gender",
             datasetLabel: "Distance",
             backgroundColor: backgroundColors,
@@ -751,10 +758,45 @@ function createStudentStatsTable(containerId, studentName) {
         tbody.appendChild(row);
     });
 
+    const chartRow = document.createElement("tr");
+    const chartCell = document.createElement("td");
+    chartCell.colSpan = 2; // span across both columns
+
+    const chartCanvas = document.createElement("canvas");
+    chartCanvas.id = `chart-${studentName}`;
+    chartCanvas.style.width = "100%";
+    chartCanvas.style.height = "300px";
+
+    chartCell.appendChild(chartCanvas);
+    chartRow.appendChild(chartCell);
+    tbody.appendChild(chartRow);
+
+    table.appendChild(tbody);
+    wrapper.appendChild(table);
+    container.appendChild(wrapper);
+
+    const weeklyDistances = getDistanceValues(student) || [];
+    let weekNames = getDistanceKeys(student);
+    weekNames = weekNames.map(w => w.replace("Distance_", ""));
+
+    createChart(chartCanvas.id, "line", weekNames, weeklyDistances, {
+        title: "Weekly Distances",
+        datasetLabel: "Distance",
+        borderColor: "rgba(75,192,192,1)",
+        backgroundColor: "rgba(75,192,192,0.2)",
+        showLegend: false,
+        scales: {
+            y: { beginAtZero: true, title: { display: true, text: "Distance" } },
+            x: { title: { display: true, text: "Week" } }
+        }
+    });
+
     table.appendChild(tbody);
     tableContainerDiv.appendChild(table);
 
     container.appendChild(wrapper);
+
+    backButton.style.display = "inline-block";
 
     setTimeout(() => wrapper.classList.add("visible"), 50);
 }
@@ -797,12 +839,14 @@ function createCategoryStatsTable(containerId, categoryValue, categoryKey) {
     wrapper.appendChild(table);
     container.appendChild(wrapper);
 
+    backButton.style.display = "inline-block";
+
     setTimeout(() => wrapper.classList.add("visible"), 50);
 }
 
 // ----------------------------------- CALL TABLES ---------------------------------
 
-function callAllStudentsTable(containerId, metricKey) {
+function callAllStudentsTable(containerId, metricKey, order = "desc") {
     const data = rankAllStudents(students, student => findFunction(student, metricKey), order);
     const columns = getIndividualColumns(metricKey);
 
@@ -960,6 +1004,7 @@ function createChart(canvasId, chartType, labels, data, options = {}) {
         }
     });
 }
+
 
 function generateColors(count, opacity = 0.7) {
     const baseColors = [
@@ -1366,5 +1411,3 @@ function loadData(year, callback) {
             if (callback) callback();
         });
 }
-
-

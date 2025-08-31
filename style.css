@@ -3,8 +3,41 @@ body {
 }
 
 p {
-    text-align: center;
+    display: block;
+    text-align: justify;
     width: 50%;
+    margin: 0 auto;
+    max-width: 600px;
+}
+
+p {
+    opacity: 0;
+    transform: translateY(-10px);
+    animation: slideIn 1s forwards;
+}
+
+h2, h3 {
+    opacity: 0;
+    transform: translateY(10px);
+    animation: slideIn 1s forwards;
+}
+
+@keyframes slideIn {
+  to {
+    opacity: 1;
+    transform: translateX(0);
+  }
+}
+
+
+.formula {
+    text-align: center;
+    margin: auto;
+    width: fit-content;
+}
+
+.conversion {
+    text-align: center;
     margin: 0 auto;
 }
 
@@ -29,10 +62,10 @@ table th, table td {
 
 select {
     font-family: 'Inter', sans-serif;
+    width: fit-content;
     font-size: 16px;
-    margin: 10px;
+    margin: 5px;
 }
-
 
 .home-wrapper {
     display: flex;
@@ -199,17 +232,16 @@ canvas {
     background-color: #fafafa; /* light gray */
     border-radius: 20px;
     padding: 10px;
-    width: 100%; /* Ensure canvas takes full width of its container */
-    height: 100%; /* Ensure canvas takes full height of its container */
+    width: 100%; /* Ensure canvas takes full width of its container */ /* Ensure canvas takes full height of its container */
     max-width: 100%; /* Prevent the canvas from expanding beyond the container */
 }
 
 /* TABLE */
 .table-wrapper {
-    flex: 1 1 48%;
+    flex: 1 1 40%;
     background-color: #fafafa; /* light gray background */
     border-radius: 20px; /* rounded corners */
-    margin: 10px;
+    margin: 5px;
     overflow: hidden; /* ensures table corners are clipped */
     padding: 0; /* remove extra padding */
 }
@@ -245,11 +277,17 @@ canvas {
     flex-wrap: wrap;
 }
 
-
 #tableContainer, #rankedChartsContainer {
     display: flex;
-    flex-direction: column;
+    flex-wrap: wrap;
+    width: auto;
     gap: 20px;
     flex: 1; /* Make both containers take up equal space */
     overflow: hidden; /* Prevent overflow of content */
+}
+
+@media (max-width: 768px) {
+    #chartsContainer {
+        display: none !important;
+    }
 }

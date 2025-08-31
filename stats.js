@@ -58,27 +58,36 @@ function updateStats() {
 
         callUniqueValuesTable(tableId, selectedCategory);
 
-        backButton.style.display = "inline-block";
     });
 
 
     backButton.addEventListener("click", () => {
-            tableContainer.innerHTML = "";
-            categoryDropdown.value = "";
+        tableContainer.innerHTML = ""; // Clear current table
 
-            if (typeDropdown.value === "individual") {
-                typeDropdown.value = "";
-            }
+        backButton.style.display = "none";
 
-            typeDropdown.style.display = "inline-block";
-            categoryDropdown.style.display = "inline-block";
-            categoryLabel.style.display = "inline-block";
-            backButton.style.display = "none";
+        // Determine what to show based on current dropdown values
+        if (typeDropdown.value === "individual") {
+            categoryDropdown.style.display = "none";
+            categoryLabel.style.display = "none";
+            callUniqueValuesTable("statsContainer", "individual");
+        } else if (typeDropdown.value === "category" && categoryDropdown.value) {
+            callUniqueValuesTable("statsContainer", categoryDropdown.value);
+        }
     });
+
+    typeDropdown.value = "individual";
+    categoryDropdown.style.display = "none";
+    categoryLabel.style.display = "none";
+    callUniqueValuesTable("statsContainer", "individual");
+
+    backButton.style.display = "none";
 
 }
 
-loadData(yearSelect.value, updateStats);
+loadData(yearSelect.value, () => {
+    updateStats();
+});
 
 
 yearSelect.addEventListener("change", () => {
