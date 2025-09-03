@@ -221,6 +221,14 @@ a {
 
 /* CHARTS */
 
+#rankedCategoryContainer {
+    display: block;           /* ensure it behaves like a block */
+    width: fit-content;       /* shrink to fit content, not 100% */
+    margin: 20px auto;        /* center horizontally */
+    clear: both;              /* push it below any floated elements */
+    text-align: center;
+}
+
 #rankedChartsContainer {
     display: flex;
     flex-direction: column;
@@ -284,10 +292,4 @@ canvas {
     gap: 20px;
     flex: 1; /* Make both containers take up equal space */
     overflow: hidden; /* Prevent overflow of content */
-}
-
-@media (max-width: 768px) {
-    #chartsContainer {
-        display: none !important;
-    }
 }

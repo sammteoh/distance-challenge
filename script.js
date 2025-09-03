@@ -7,6 +7,7 @@ const UNIT_CONVERSIONS = {
 let students = [];
 let currentUnit = "kilometers";
 
+
 function filterStudents(students, categoryKey, categoryValue) {
     return students.filter(student => {
         let value = student[categoryKey];
@@ -30,6 +31,17 @@ function getDistanceValues(student) {
         .filter(key => key.includes("Distance"))
         .map(key => parseFloat(student[key]) || 0);
 }
+
+function getCumulativeDistances(student) {
+    const weekly = getDistanceValues(student); // e.g. [5, 8, 12, 7, 10]
+    let cumulative = [];
+    weekly.reduce((acc, val, i) => {
+        cumulative[i] = acc + val;  // running total
+        return cumulative[i];
+    }, 0);
+    return cumulative; // e.g. [5, 13, 25, 32, 42]
+}
+
 
 function getTotalDistance(student) {
     const distanceKeys = getDistanceKeys(student);
@@ -169,6 +181,25 @@ function calculateTotalsPerDate(studentsInGroup, distanceKeys) {
         return { date: dateKey, total };
     });
 }
+
+function getCategoryCumulativeDistances(categoryKey, categoryName, students) {
+    const group = students.filter(s => String(s[categoryKey]) === String(categoryName));
+    const distanceKeys = getDistanceKeys(students[0]); // ["Week1Distance", "Week2Distance", ...]
+    const weeklyTotals = calculateTotalsPerDate(group, distanceKeys);
+    // Convert {date, total} to array of totals
+    const totalsArray = weeklyTotals.map(d => d.total);
+
+    // Cumulative sum
+    let cumulative = [];
+    totalsArray.reduce((sum, val, i) => {
+        cumulative[i] = sum + val;
+        return cumulative[i];
+    }, 0);
+
+    return cumulative;
+}
+
+
 
 function calculateTotalDistance(studentsInGroup) {
     return studentsInGroup
@@ -474,6 +505,7 @@ function createTable(containerId, data, columns) {
 function createHomeTable(containerId) {
     const container = document.getElementById(containerId);
     const data = rankHomeTable(students);
+
     const columns = [
         { label: "", key: "rank"},
         { label: "Name", key: "name" }, 
@@ -537,7 +569,7 @@ function createHomeTable(containerId) {
     wrapper.appendChild(table);
     container.appendChild(wrapper);
 
-    setTimeout(() => wrapper.classList.add("visible"), 50);    
+    setTimeout(() => wrapper.classList.add("visible"), 50);  
 }
 
 function createCategoryHomeTable(containerId, category) {
@@ -956,45 +988,46 @@ function callAllGroupedStudentTables(containerId, categoryKey, metricKey) {
 function createChart(canvasId, chartType, labels, data, options = {}) {
     const ctx = document.getElementById(canvasId).getContext('2d');
 
-    let dataset = {};
-    if (chartType === "scatter") {
-        dataset = {
-            label: options.datasetLabel || "Data",
-            data: data,
-            backgroundColor: options.backgroundColor || "rgba(54,162,235,0.5)",
-            pointRadius: 5
-        };
+    let datasets;
+
+    if (Array.isArray(data) && data.length && data[0] && data[0].data !== undefined) {
+        datasets = data;
     } else {
-        dataset = {
-            label: options.datasetLabel || "Data",
-            data: data,
-            backgroundColor: options.backgroundColor || "rgba(54,162,235,0.5)",
-            borderColor: options.borderColor || "rgba(54,162,235,1)",
-            borderWidth: 1
-        };
+        // Single dataset
+        if (chartType === "scatter") {
+            datasets = [{
+                label: options.datasetLabel || "Data",
+                data: data,
+                backgroundColor: options.backgroundColor || "rgba(54,162,235,0.5)",
+                pointRadius: options.pointRadius || 5
+            }];
+        } else {
+            datasets = [{
+                label: options.datasetLabel || "Data",
+                data: data,
+                backgroundColor: options.backgroundColor || "rgba(54,162,235,0.5)",
+                borderColor: options.borderColor || "rgba(54,162,235,1)",
+                borderWidth: 1
+            }];
+        }
     }
 
     return new Chart(ctx, {
         type: chartType,
-        data: { labels: labels, datasets: [dataset] },
+        data: { labels: labels, datasets: datasets }, // <- always use labels
         options: {
             responsive: true,
             plugins: {
-                legend: {
-                    display: options.showLegend || false
-                },
-                title: {
-                    display: !!options.title,
-                    text: options.title || ""
-                },
+                legend: { display: options.showLegend || false },
+                title: { display: !!options.title, text: options.title || "" },
                 tooltip: {
                     callbacks: {
                         label: function(context) {
                             if (chartType === "scatter") {
                                 const point = context.raw;
-                                return `${point.name}: ${point.x}, ${point.y.toFixed(2)}`;
+                                return `${context.dataset.label} - ${point.name}: ${point.x}, ${point.y.toFixed(2)}`;
                             } else {
-                                return `${context.label}: ${context.formattedValue}`;
+                                return `${context.dataset.label}: ${context.formattedValue}`;
                             }
                         }
                     }
@@ -1004,6 +1037,7 @@ function createChart(canvasId, chartType, labels, data, options = {}) {
         }
     });
 }
+
 
 
 function generateColors(count, opacity = 0.7) {
@@ -1019,6 +1053,7 @@ function generateColors(count, opacity = 0.7) {
 
 
 function updateRankedTotalCharts() {
+    document.getElementById("rankedCategoryContainer").innerHTML = "";
     const container = document.getElementById("rankedChartsContainer");
     container.innerHTML = "";
 
@@ -1026,12 +1061,12 @@ function updateRankedTotalCharts() {
         .map(s => ({
             name: s.Name,
             totalDistance: getTotalDistance(s),
+            cumulativeDistances: getCumulativeDistances(s),
+            weeklyDistances: getDistanceValues(s),
             improvement: lastWeekImprovement(s)
         }))
         .sort((a, b) => b.totalDistance - a.totalDistance);
-
-
-    // --- Horizontal Bar: Top 10 Students ---
+        // --- Horizontal Bar: Top 10 Students ---
 
     const top10Canvas = document.createElement("canvas");
     top10Canvas.id = "top10Chart";
@@ -1039,7 +1074,6 @@ function updateRankedTotalCharts() {
     top10Canvas.style.height = "300px";
     top10Canvas.style.margin = "10px";
     container.appendChild(top10Canvas);
-
 
     const top10 = sortedStudents.slice(0, 10);
     const topNames = top10.map(s => s.name);
@@ -1082,6 +1116,59 @@ function updateRankedTotalCharts() {
         }
     });
 
+        // Cumulative Distance
+
+    const datasets = top10.map((s, i) => ({
+        label: s.name,
+        data: s.cumulativeDistances, // cumulative values per week
+        borderColor: generateColors(top10.length, 1)[i],
+        backgroundColor: "transparent",
+        tension: 0.2,
+        fill: false
+    }));
+
+    const lineCanvas = document.createElement("canvas");
+    lineCanvas.id = "top10OverTime";
+    lineCanvas.style.width = "100%";
+    lineCanvas.style.height = "400px";
+    lineCanvas.style.margin = "10px";
+    container.appendChild(lineCanvas);
+    const weekNames = getDistanceKeys(students[0]).map(k => k.replace("Distance_", ""));
+
+    createChart("top10OverTime", "line", weekNames, datasets, {
+        title: "Top 10 Students: Cumulative Distance Over Time",
+        scales: {
+            y: { beginAtZero: true, title: { display: true, text: "Cumulative Distance" } },
+            x: { title: { display: true, text: "Week" } }
+        }
+    });
+
+    // Weekly Distance
+
+    const weeklyDatasets = top10.map((s, i) => ({
+        label: s.name,
+        data: s.weeklyDistances, // cumulative values per week
+        borderColor: generateColors(top10.length, 1)[i],
+        backgroundColor: "transparent",
+        tension: 0.2,
+        fill: false
+    }));
+
+    const lineCanvas2 = document.createElement("canvas");
+    lineCanvas2.id = "top10weeklyoverTime";
+    lineCanvas2.style.width = "100%";
+    lineCanvas2.style.height = "400px";
+    lineCanvas2.style.margin = "10px";
+    container.appendChild(lineCanvas2);
+
+    createChart("top10weeklyoverTime", "line", weekNames, weeklyDatasets, {
+        title: "Top 10 Students: Weekly Distances",
+        scales: {
+            y: { beginAtZero: true, title: { display: true, text: "Weekly Distance" } },
+            x: { title: { display: true, text: "Week" } }
+        }
+    });
+
     // --- Pie Chart: Top 10 Students ---
 
     const pieCanvas = document.createElement("canvas");
@@ -1101,6 +1188,8 @@ function updateRankedTotalCharts() {
         datasetLabel: "Distance",
         backgroundColor: pieColors
     });
+
+
 }
 
 function updateTotalAverageCharts() {
@@ -1114,7 +1203,7 @@ function updateTotalAverageCharts() {
             improvement: lastWeekImprovement(s)
         }))
         .sort((a, b) => b.averageDistance - a.averageDistance);
-
+        
     // --- Horizontal Bar: Top 10 Students ---
 
     const top10Canvas = document.createElement("canvas");
@@ -1380,8 +1469,136 @@ function updateTotalWeeksCharts() {
     });
 }
 
-const yearSelect = document.getElementById("yearSelect");
-const unitSelect = document.getElementById("unitSelect");
+function createCategoryChart(categoryKey) {
+    const container = document.getElementById("rankedCategoryContainer");
+    container.innerHTML = "";
+
+    const data = rankCategories(`${categoryKey}`, "totalDistance");
+
+    const columns = [
+        { label: "", key: "rank"},
+        { label: "Name", key: "name"},
+        { label: "Total Distance", key: "metricValue"},
+        { label: "Improvement", key: "improvement"}
+    ];
+    container.innerHTML = "";
+
+    const wrapper = document.createElement("div");
+    wrapper.className = "table-wrapper slide-in";
+    
+    const table = document.createElement("table");
+    table.style.borderCollapse = "collapse";
+
+    const thead = document.createElement("thead");
+    const headerRow = document.createElement("tr");
+    columns.forEach(col => {
+        const th = document.createElement("th");
+        th.textContent = col.label;
+        headerRow.appendChild(th);
+    });
+    thead.appendChild(headerRow);
+    table.appendChild(thead);
+
+    const tbody = document.createElement("tbody");
+    data.forEach(rowData => {
+        const row = document.createElement("tr");
+        if (rowData.rank === 1) {
+            row.style.backgroundColor = "rgba(255, 225, 52, 0.5)";
+        }
+
+        columns.forEach(col => {
+            const td = document.createElement("td");
+
+            if (col.key === "name") {
+                td.textContent = rowData[col.key];
+            } else if (col.key === "metricValue") {
+                td.textContent = parseFloat(rowData[col.key]).toFixed(2);
+            } else if (col.key === "improvement") {
+                const value = parseFloat(rowData[col.key]);
+                td.textContent = value.toFixed(1) + "%";
+                if (!isNaN(value)) {
+                    td.style.color = value >= 0 ? "green" : "red";
+                }
+            } else if (col.key === "rank") {
+                td.textContent = rowData.rank;
+                td.style.textAlign = "right";
+            } else {
+                td.textContent = rowData[col.key];
+            }
+            row.appendChild(td);
+        });
+        tbody.appendChild(row);
+    });
+    table.appendChild(tbody);
+
+    wrapper.appendChild(table);
+    container.appendChild(wrapper);
+
+    const sortedCategory = rankCategories(categoryKey, "totalDistance");
+
+    const cumulativeCanvas = document.createElement("canvas");
+    cumulativeCanvas.id = "categoryChart";
+    cumulativeCanvas.style.width = "100%";
+    cumulativeCanvas.style.height = "300px";
+    cumulativeCanvas.style.margin = "10px";
+    container.appendChild(cumulativeCanvas);
+
+    const weekNames = getDistanceKeys(students[0]).map(k => k.replace("Distance_", ""));
+
+    const datasets = sortedCategory.map((c, i) => ({
+        label: c.name,
+        data: getCategoryCumulativeDistances(categoryKey, c.name, students),
+        borderColor: generateColors(sortedCategory.length, 1)[i],
+        backgroundColor: "transparent",
+        tension: 0.2,
+        fill: false
+    }));
+
+
+    createChart("categoryChart", "line", weekNames, datasets, {
+        title: "Cumulative Weekly Totals",
+        scales: {
+            y: { beginAtZero: true, title: { display: true, text: "Distance" } },
+            x: { title: { display: true, text: "Week" } }
+        }
+    });
+
+    const weeklyCanvas = document.createElement("canvas");
+    weeklyCanvas.id = "weeklyCategoryChart";
+    weeklyCanvas.style.width = "100%";
+    weeklyCanvas.style.height = "300px";
+    weeklyCanvas.style.margin = "10px";
+    container.appendChild(weeklyCanvas);
+
+    const weeklyDatasets = sortedCategory.map((c, i) => {
+        const group = students.filter(s => String(s[categoryKey]) === String(c.name));
+
+        const distanceKeys = getDistanceKeys(students[0]);
+
+        const totalsPerWeek = calculateTotalsPerDate(group, distanceKeys);
+
+        return {
+            label: c.name,
+            data: totalsPerWeek.map(d => d.total),
+            borderColor: generateColors(sortedCategory.length, 1)[i],
+            backgroundColor: "transparent",
+            tension: 0.2,
+            fill: false
+        };
+    });
+
+
+    createChart("weeklyCategoryChart", "line", weekNames, weeklyDatasets, {
+        title: "Weekly Totals",
+        scales: {
+            y: { beginAtZero: true, title: { display: true, text: "Distance" } },
+            x: { title: { display: true, text: "Week" } }
+        }
+    });
+
+    setTimeout(() => wrapper.classList.add("visible"), 50);
+}
+
 
 function loadData(year, callback) {
     fetch(`data-${year}.csv`)

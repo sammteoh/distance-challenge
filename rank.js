@@ -3,6 +3,8 @@ function updateRankTable() {
     const metric = document.getElementById("metricSelect").value;
     const containerId = "tableContainer";
     const rankedContainer = document.getElementById("rankedChartsContainer");
+    const categoryChartsContainer = document.getElementById("rankedCategoryContainer");
+    categoryChartsContainer.innerHTML = "";
     rankedContainer.innerHTML = "";
 
     const container = document.getElementById(containerId);
@@ -49,7 +51,8 @@ function updateRankTable() {
 
         setTimeout(() => wrapper.classList.add("visible"), 50);
     } else {
-        const grouped = groupByCategory(students, category);
+        if (metric === "totalDistance") createCategoryChart(category);
+            const grouped = groupByCategory(students, category);
 
         Object.keys(grouped).forEach(groupName => {
             const wrapper = document.createElement("div");
