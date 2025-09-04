@@ -1483,6 +1483,13 @@ function createCategoryChart(categoryKey) {
     ];
     container.innerHTML = "";
 
+    const houseColors = {
+        "Swarm": "#f1c40f",
+        "Blue Tang": "#3498db",
+        "Gator Nation": "#27ae70",
+        "Wolfpack": "#808080"
+    }
+
     const wrapper = document.createElement("div");
     wrapper.className = "table-wrapper slide-in";
     
@@ -1545,14 +1552,23 @@ function createCategoryChart(categoryKey) {
 
     const weekNames = getDistanceKeys(students[0]).map(k => k.replace("Distance_", ""));
 
-    const datasets = sortedCategory.map((c, i) => ({
-        label: c.name,
-        data: getCategoryCumulativeDistances(categoryKey, c.name, students),
-        borderColor: generateColors(sortedCategory.length, 1)[i],
-        backgroundColor: "transparent",
-        tension: 0.2,
-        fill: false
-    }));
+
+    const datasets = sortedCategory.map((c, i) => {
+        // Use fixed colors if categoryKey is "house"
+        console.log(c.name);
+        const color = categoryKey === "House"
+            ? (houseColors[c.name] || "#7f8c8d")
+            : generateColors(sortedCategory.length, 1)[i];
+
+        return {
+            label: c.name,
+            data: getCategoryCumulativeDistances(categoryKey, c.name, students),
+            borderColor: color,
+            backgroundColor: "transparent",
+            tension: 0.2,
+            fill: false
+        };
+    });
 
 
     createChart("categoryChart", "line", weekNames, datasets, {
@@ -1572,20 +1588,23 @@ function createCategoryChart(categoryKey) {
 
     const weeklyDatasets = sortedCategory.map((c, i) => {
         const group = students.filter(s => String(s[categoryKey]) === String(c.name));
-
         const distanceKeys = getDistanceKeys(students[0]);
-
         const totalsPerWeek = calculateTotalsPerDate(group, distanceKeys);
+
+        const color = categoryKey === "House"
+            ? (houseColors[c.name] || "#7f8c8d")
+            : generateColors(sortedCategory.length, 1)[i];
 
         return {
             label: c.name,
             data: totalsPerWeek.map(d => d.total),
-            borderColor: generateColors(sortedCategory.length, 1)[i],
+            borderColor: color,
             backgroundColor: "transparent",
             tension: 0.2,
             fill: false
         };
     });
+
 
 
     createChart("weeklyCategoryChart", "line", weekNames, weeklyDatasets, {
