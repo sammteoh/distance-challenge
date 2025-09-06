@@ -18,12 +18,8 @@ function updateRankTable() {
         container.style.flex = "1";
     }
 
-    if (category !== "total") {
-        rankedContainer.style.display = "none";
-    } else {
-        rankedContainer.style.display = "block";
-    }
-    
+    rankedContainer.style.display = (category === "total") ? "block" : "none";
+ 
     let order = "desc";
 
     if (category === "total") {
@@ -65,8 +61,6 @@ function updateRankTable() {
         });
     }
 }
-
-// document.getElementById("updateTable").addEventListener("click", updateRankTable);
 
 loadData(yearSelect.value, () => {
     updateRankTable();

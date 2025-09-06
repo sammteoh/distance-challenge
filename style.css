@@ -8,9 +8,6 @@ p {
     width: 50%;
     margin: 0 auto;
     max-width: 600px;
-}
-
-p {
     opacity: 0;
     transform: translateY(-10px);
     animation: slideIn 1s forwards;
@@ -25,7 +22,7 @@ h2, h3 {
 @keyframes slideIn {
   to {
     opacity: 1;
-    transform: translateX(0);
+    transform: translateY(0);
   }
 }
 
@@ -48,8 +45,6 @@ h3 {
 table {
     width: auto;
     margin: 20px auto;
-    margin-left: auto;
-    margin-right: auto;
     border-collapse: collapse;
     border: none;
 }
@@ -93,7 +88,7 @@ select {
 
 #controls {
     display: flex;
-    flex-direction: column;  /* stack Type + Category */
+    flex-direction: column; 
     justify-content: center;
     align-items: center;
     gap: 10px;
@@ -222,10 +217,10 @@ a {
 /* CHARTS */
 
 #rankedCategoryContainer {
-    display: block;           /* ensure it behaves like a block */
-    width: fit-content;       /* shrink to fit content, not 100% */
-    margin: 20px auto;        /* center horizontally */
-    clear: both;              /* push it below any floated elements */
+    display: block;       
+    width: fit-content;   
+    margin: 20px auto;   
+    clear: both;             
     text-align: center;
 }
 
@@ -237,39 +232,39 @@ a {
 }
 
 canvas {
-    background-color: #fafafa; /* light gray */
+    background-color: #fafafa;
     border-radius: 20px;
     padding: 10px;
-    width: 100%; /* Ensure canvas takes full width of its container */ /* Ensure canvas takes full height of its container */
-    max-width: 100%; /* Prevent the canvas from expanding beyond the container */
+    width: 100%;
+    max-width: 100%;
 }
 
 /* TABLE */
 .table-wrapper {
     flex: 1 1 40%;
-    background-color: #fafafa; /* light gray background */
-    border-radius: 20px; /* rounded corners */
+    background-color: #fafafa;
+    border-radius: 20px;
     margin: 5px;
-    overflow: hidden; /* ensures table corners are clipped */
-    padding: 0; /* remove extra padding */
+    overflow: hidden;
+    padding: 0;
 }
 
 .table-wrapper table {
     width: 100%;
     border-collapse: collapse;
-    border: none; /* remove table border */
-    background: none; /* make table transparent to show wrapper */
+    border: none;
+    background: none;
 }
 
 .table-wrapper table th,
 .table-wrapper table td {
-    border: none; /* remove cell borders */
+    border: none;
     padding: 12px 15px;
     text-align: left;
 }
 
 .table-wrapper table tbody tr:hover {
-    background-color: #d0d0d0; /* darker gray on hover */
+    background-color: #d0d0d0;
     transition: background-color 0.2s ease;
 }
 
@@ -290,6 +285,6 @@ canvas {
     flex-wrap: wrap;
     width: auto;
     gap: 20px;
-    flex: 1; /* Make both containers take up equal space */
-    overflow: hidden; /* Prevent overflow of content */
+    flex: 1;
+    overflow: hidden;
 }

@@ -12,7 +12,6 @@ function updateStats() {
     const categoryLabel = document.getElementById("categoryLabel");
     const tableContainer = document.getElementById("statsContainer");
 
-
     typeDropdown.addEventListener("change", () =>{
         const selectedType = typeDropdown.value;
         tableContainer.innerHTML = "";
@@ -62,11 +61,10 @@ function updateStats() {
 
 
     backButton.addEventListener("click", () => {
-        tableContainer.innerHTML = ""; // Clear current table
+        tableContainer.innerHTML = "";
 
         backButton.style.display = "none";
 
-        // Determine what to show based on current dropdown values
         if (typeDropdown.value === "individual") {
             categoryDropdown.style.display = "none";
             categoryLabel.style.display = "none";
@@ -82,13 +80,11 @@ function updateStats() {
     callUniqueValuesTable("statsContainer", "individual");
 
     backButton.style.display = "none";
-
 }
 
 loadData(yearSelect.value, () => {
     updateStats();
 });
-
 
 yearSelect.addEventListener("change", () => {
     loadData(yearSelect.value, updateStats);
