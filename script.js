@@ -17,15 +17,23 @@ const METRICS = {
 };
 
 const HOUSECOLORS = {
-    "Swarm": "rgba(255, 214, 109, 0.83)",
-    "Blue Tang": "rgba(74, 183, 255, 0.74)",
-    "Wolfpack": "rgba(112, 115, 115, 0.73)",
-    "Gator Nation": "rgba(18, 178, 21, 0.79)"
+    "Swarm": "rgba(255, 214, 109, 0.7)",
+    "Blue Tang": "rgba(74, 183, 255, 0.7)",
+    "Wolfpack": "rgba(112, 115, 115, 0.7)",
+    "Gator Nation": "rgba(18, 178, 21, 0.7)"
 };
 
 const GENDERCOLORS = {
-    "Male": "rgba(54, 162, 235, 1)",
+    "Male": "rgba(54, 162, 235, 0.6)",
     "Female": "rgba(215, 105, 255, 0.6)"
+};
+
+const GRADECOLORS = {
+    "9": "rgba(255, 99, 132, 0.7)",
+    "10": "rgba(54, 162, 235, 0.7)",
+    "11": "rgba(255, 206, 86, 0.7)",
+    "12": "rgba(75, 192, 192, 0.7)",
+    "Teacher": "rgba(153, 102, 255, 0.7)"
 };
 
 let students = [];
@@ -81,9 +89,9 @@ function getAverageDistance(student) {
             weeksWithRuns++;
         }
     });
+    if (weeksWithRuns === 0) return 0;
     const average = getTotalDistance(student) / weeksWithRuns;
 
-    if (weeksWithRuns === 0) return 0;
     return Number(average.toFixed(2));
 }
 
@@ -187,6 +195,10 @@ function weeklyImprovement(student) {
     return improvements;
 }
 
+function getHouseColor(student) {
+    return HOUSECOLORS[student.House] || "rgba(0, 0, 0, 1)";
+}
+
 // ------------- GROUP CALCULATIONS ------------------------
 
 function calculateTotalsPerDate(studentsInGroup, distanceKeys) {
@@ -262,6 +274,38 @@ function calculateImprovement(totalsPerDate) {
         : 0;
 }
 
+function calculateWeeklyRanks(students) {
+    const distanceKeys = getDistanceKeys(students[0]);
+    const weeklyRanks = {};
+
+    students.forEach(s => {
+        weeklyRanks[s.Name] = [];
+    });
+
+    const cumulativeDistances = {};
+    students.forEach(s => { cumulativeDistances[s.Name] = 0; });
+
+    distanceKeys.forEach(key => {
+        students.forEach(s => {
+            cumulativeDistances[s.Name] += s[key] || 0;
+        });
+
+        const sorted = [...students].sort((a, b) => cumulativeDistances[b.Name] - cumulativeDistances[a.Name]);
+
+        sorted.forEach((student, index) => {
+            weeklyRanks[student.Name].push({
+                week: key.replace("Distance_", ""),
+                rank: index + 1,
+                cumulativeDistance: cumulativeDistances[student.Name]
+            });
+        });
+    });
+
+    console.log("hi");
+    console.log(weeklyRanks);
+    return weeklyRanks;
+}
+
 // ------------- FIND FUNCTIONS/COLUMNS ------------------------
 
 function getGroupStats(group) {
@@ -324,10 +368,20 @@ function groupByCategory(students, category) {
 }
 
 function rankHomeTable(students, order = "desc") {
+    const weeklyRanks = calculateWeeklyRanks(students);
+    const lastWeekIndex = weeklyRanks[students[0].Name].length - 1;
+    const prevWeekIndex = lastWeekIndex - 1;
+
     let studentMetrics = students.map(student => {
+        const ranks = weeklyRanks[student.Name];
+
+        const currentRank = ranks[lastWeekIndex].rank;
+        const previousRank = prevWeekIndex >= 0 ? ranks[prevWeekIndex].rank : null;
+
         return {
             name: student.Name,
             totalDistance: getTotalDistance(student),
+            previousRank: previousRank,
             improvement: lastWeekImprovement(student)
         };
     });
@@ -509,10 +563,22 @@ function createHomeTable(containerId) {
                 const value = parseFloat(rowData[col.key]);
                 td.textContent = value.toFixed(1) + "%";
                 if (!isNaN(value)) {
-                    td.style.color = value >= 0 ? "green" : "red";
+                    td.style.color = value >= 0 ? "rgba(80, 170, 20, 1)" : "rgba(238, 75, 43, 1)";
                 }
             } else if (col.key === "rank") {
-                td.textContent = rowData.rank;
+                let rankText = rowData.rank;
+
+                if (rowData.previousRank != null) {
+                    if (rowData.rank < rowData.previousRank) {
+                        rankText = "▲ " + rowData.rank;
+                        td.style.color = "rgba(80, 170, 20, 1)";
+                    } else if (rowData.rank > rowData.previousRank) {
+                        rankText = "▼ " + rowData.rank;
+                        td.style.color = "rgba(238, 75, 43, 1)";
+                    }
+                }
+                
+                td.textContent = rankText;
                 td.style.textAlign = "right";
             } else {
                 td.textContent = rowData[col.key];
@@ -612,10 +678,7 @@ function createCategoryHomeTable(containerId, category) {
         const houseLabels = houseData.map(d => d.house);
         const houseTotals = houseData.map(d => d.total);
 
-        const backgroundColors = houseLabels.map(h => HOUSECOLORS[h] || "rgba(200,200,200,0.5)");
-        const borders = houseLabels.map(h => HOUSECOLORS[h] || "rgba(100,100,100,1)");
-    
-        createTopBarChart(container, "houseDistanceChart", houseLabels, houseTotals, "Total Distance by House", "Distance", backgroundColors, borders);
+        createTopBarChart(container, "houseDistanceChart", houseLabels, houseTotals, "Total Distance by House", "Distance");
 
     } else if (category === "Gender") {
         const groups = groupByCategory(students, "Gender");
@@ -629,10 +692,7 @@ function createCategoryHomeTable(containerId, category) {
         const genderLabels = genderData.map(d => d.gender);
         const genderTotals = genderData.map(d => d.total);
 
-        const backgroundColors = genderLabels.map(g => GENDERCOLORS[g] || "rgba(200,200,200,0.5)");
-        const borders = genderLabels.map(g => GENDERCOLORS[g] || "rgba(100,100,100,1)");
-
-        createTopPieChart(container, "genderChart", genderLabels, genderTotals, `Top Distance by Gender`, "Distance", backgroundColors, borders);
+        createTopPieChart(container, "genderChart", genderLabels, genderTotals, `Top Distance by Gender`, "Distance");
     } else if (category === "Grade") {
         const groups = groupByCategory(students, "Grade");
         let gradeData = Object.keys(groups).map(g => ({
@@ -645,9 +705,7 @@ function createCategoryHomeTable(containerId, category) {
         const gradeLabels = gradeData.map(d => d.grade);
         const gradeTotals = gradeData.map(d => d.total);
 
-        const gradeColors = generateColors(5, 0.8)
-
-        createTopBarChart(container, "gradeChart", gradeLabels, gradeTotals, `Top Distance by Grade`, "Distance", gradeColors, gradeColors);
+        createTopBarChart(container, "gradeChart", gradeLabels, gradeTotals, `Top Distance by Grade`, "Distance");
     } 
     requestAnimationFrame(() => wrapper.classList.add("visible"));
 }
@@ -687,11 +745,13 @@ function createStudentStatsTable(containerId, studentName) {
         tbody.appendChild(row);
     });
 
+    // Weekly Distances Chart
+
     const chartRow = document.createElement("tr");
     const chartCell = document.createElement("td");
     chartCell.colSpan = 2;
 
-    const chartCanvas = createChartCanvas(wrapper, `chart-${studentName}`, "100px", "100px");
+    const chartCanvas = createChartCanvas(wrapper, `chart-${studentName}`, "100px", "50px");
 
     chartCell.appendChild(chartCanvas);
     chartRow.appendChild(chartCell);
@@ -713,6 +773,64 @@ function createStudentStatsTable(containerId, studentName) {
         showLegend: false,
         scales: {
             y: { beginAtZero: true, title: { display: true, text: "Distance" } },
+            x: { title: { display: true, text: "Week" } }
+        }
+    });
+
+    // Weekly Ranks Chart
+
+    const weeklyRanks = calculateWeeklyRanks(students);
+    const studentRanks = weeklyRanks[student.Name].map(r => r.rank);
+
+    const rankChartRow = document.createElement("tr");
+    const rankChartCell = document.createElement("td");
+    rankChartCell.colSpan = 2;
+
+    const rankChartCanvas = createChartCanvas(wrapper, `rank-chart-${studentName}`, "100px", "50px");
+
+    rankChartCell.appendChild(rankChartCanvas);
+    rankChartRow.appendChild(rankChartCell);
+    tbody.appendChild(rankChartRow);
+
+    createChart(rankChartCanvas.id, "line", weekNames, studentRanks, {
+        title: "Weekly Ranks",
+        datasetLabel: "Rank",
+        borderColor: "rgba(255, 99, 132, 1)",
+        backgroundColor: "rgba(255, 99, 132, 0.2)",
+        showLegend: false,
+        scales: {
+            y: { 
+                reverse: true, 
+                beginAtZero: false,
+                title: { display: true, text: "Rank" },
+                ticks: { precision: 0 }
+            },
+            x: { tital: { display: true, text: "Week" } }
+        }
+    });
+
+    // Cumulative Distances Chart
+
+    const cumulativeDistances = getCumulativeDistances(student);
+
+    const cumulativeChartRow = document.createElement("tr");
+    const cumulativeChartCell = document.createElement("td");
+    cumulativeChartCell.colSpan = 2;
+
+    const cumulativeChartCanvas = createChartCanvas(wrapper, `cumulative-chart-${studentName}`, "100px", "50px");
+
+    cumulativeChartCell.appendChild(cumulativeChartCanvas)
+    cumulativeChartRow.appendChild(cumulativeChartCell)
+    tbody.appendChild(cumulativeChartRow);
+
+    createChart(cumulativeChartCanvas.id, "line", weekNames, cumulativeDistances, {
+        title: "Cumulative Distances",
+        datasetLabel: "Distance",
+        borderColor: "rgba(54, 162, 235, 1)",
+        backgroundColor: "rgba(54, 162, 235, 0.2)",
+        showLegend: false,
+        scales: {
+            y: { beginAtZero: true, title: { display: true, text: "Cumulative Distance" } },
             x: { title: { display: true, text: "Week" } }
         }
     });
@@ -886,6 +1004,32 @@ function createChart(canvasId, chartType, labels, data, options = {}) {
 
     let datasets;
 
+    const backgroundColors = labels.map(label => {
+        if (HOUSECOLORS[label]) {
+            return HOUSECOLORS[label];
+        } else if (GENDERCOLORS[label]) {
+            return GENDERCOLORS[label];
+        } else if (GRADECOLORS[label]) {
+            return GRADECOLORS[label];
+        }
+
+        const student = students.find(s => s.Name === label);
+        return student ? getHouseColor(student) : options.backgroundColor;
+    });
+
+    const borderColors = labels.map(label => {
+        if (HOUSECOLORS[label]) {
+            return HOUSECOLORS[label];
+        } else if (GENDERCOLORS[label]) {
+            return GENDERCOLORS[label];
+        } else if (GRADECOLORS[label]) {
+            return GRADECOLORS[label];
+        }
+
+        const student = students.find(s => s.Name === label);
+        return student ? getHouseColor(student) : options.borderColor;
+    });
+
     if (Array.isArray(data) && data.length && data[0] && data[0].data !== undefined) {
         datasets = data;
     } else {
@@ -893,15 +1037,16 @@ function createChart(canvasId, chartType, labels, data, options = {}) {
             datasets = [{
                 label: options.datasetLabel || "Data",
                 data: data,
-                backgroundColor: options.backgroundColor || "rgba(54,162,235,0.5)",
+                backgroundColor: backgroundColors,
+                borderColor: borderColors,
                 pointRadius: options.pointRadius || 5
             }];
         } else {
             datasets = [{
                 label: options.datasetLabel || "Data",
                 data: data,
-                backgroundColor: options.backgroundColor || "rgba(54,162,235,0.5)",
-                borderColor: options.borderColor || "rgba(54,162,235,1)",
+                backgroundColor: backgroundColors,
+                borderColor: borderColors,
                 borderWidth: 1
             }];
         }
@@ -933,21 +1078,12 @@ function createChart(canvasId, chartType, labels, data, options = {}) {
     });
 }
 
-function generateColors(count, opacity = 0.7) {
-    const baseColors = [
-        `rgba(54, 162, 235, ${opacity})`, 
-        `rgba(255, 99, 132, ${opacity})`, 
-        `rgba(255, 206, 86, ${opacity})`, 
-        `rgba(75, 192, 192, ${opacity})`,  
-        `rgba(153, 102, 255, ${opacity})`
-    ];
-    return Array.from({ length: count }, (_, i) => baseColors[i % baseColors.length]);
-}
 
 function createSortedStudents(topN, func) {
     return sortedStudents = [...students]
         .map(s => ({
             name: s.Name,
+            House: s.House,
             totalDistance: getTotalDistance(s),
             averageDistance: getAverageDistance(s),
             minDistance: getMinDistance(s).distance,
@@ -963,52 +1099,56 @@ function createSortedStudents(topN, func) {
 function createTopStudents(topN, func) {
     const sortedStudents = createSortedStudents(topN, func);
     const topStudents = sortedStudents.slice(0, topN);
+
+    topStudents.forEach(s => {
+        s.color = getHouseColor(s);
+        console.log(s.color);
+    });
+
     return {
         topStudents,
         topNames: topStudents.map(s => s.name),
-        topDistances: topStudents.map(s => func(s))
+        topDistances: topStudents.map(s => func(s)),
+        topColors: topStudents.map(s => s.color)
     }
 }
 
-function createTopBarChart(container, chartId, labels, values, title, datasetLabel, colorsSolid, colorsSemi) {
+function createTopBarChart(container, chartId, labels, values, title, datasetLabel) {
     const topBarChart = createChartCanvas(container, chartId);
 
     createChart(chartId, "bar", labels, values, {
         title: title,
         datasetLabel: datasetLabel,
-        backgroundColor: colorsSemi,
-        borderColor: colorsSolid,
-        scales: { x: { beginAtZero: true } },
+        scales: { x: { beginAtZero: true } }
     });
 }
 
-function createTopPieChart(container, chartId, labels, values, title, datasetLabel, colorsSolid, colorsSemi) {
-    const pieCanvas = createChartCanvas(container, chartId);
+function createTopPieChart(container, chartId, labels, values, title, datasetLabel) {
+    const pieCanvas = createChartCanvas(container, chartId, "100%", "100px");
 
     createChart(chartId, "pie", labels, values, {
         title: title,
         datasetLabel: datasetLabel,
-        borderColor: colorsSolid,
-        backgroundColor: colorsSemi
     });
 }
 
-function createScatterChart(container, chartId, funcX, x, funcY, y, datasetLabel, colorsSemi) {
+function createScatterChart(container, chartId, funcX, x, funcY, y, datasetLabel) {
     const scatterChart = createChartCanvas(container, chartId);
 
-    const scatterData = students.map(s => ({
-        x: funcX(s),
-        y: funcY(s),
-        name: s.Name
-    }))
+    const datasets = students.map(s => ({
+        label: s.Name,
+        data: [{ x: funcX(s), y: funcY(s) }],
+        backgroundColor: getHouseColor(s),
+        borderColor: getHouseColor(s),
+        pointRadius: 6
+    }));
 
-    createChart(chartId, "scatter", [], scatterData, {
+    createChart(chartId, "scatter", [], datasets, {
         title: `${x} vs ${y} Scatter Plot`,
         datasetLabel: datasetLabel,
-        backgroundColor: colorsSemi,
         scales: {
             x: { title: { display: true, text: `${x}` } },
-            y: { tital: { display: true, text: `${y}` } }
+            y: { title: { display: true, text: `${y}` } }
         }
     });
 }
@@ -1021,22 +1161,19 @@ function updateRankedTotalCharts(topN = 10) {
     const top = createTopStudents(topN, s => s.totalDistance);
     const weekNames = getDistanceKeys(students[0]).map(k => k.replace("Distance_", ""));
 
-    const colorsSolid = generateColors(topN, 0.7);
-    const colorsSemi = generateColors(topN, 0.5);
-
     // --- Horizontal Bar: Top 10 Students ---
 
-    createTopBarChart(container, "topBarChart", top.topNames, top.topDistances, `Top ${topN} Students`, "Distances", colorsSolid, colorsSemi);
+    createTopBarChart(container, "topBarChart", top.topNames, top.topDistances, `Top ${topN} Students`, "Distances");
 
     // --- Scatter Plot: Distance vs Improvement ---
 
-    createScatterChart(container, "scatterChart", s => getTotalDistance(s), "Total Distance", s => lastWeekImprovement(s), "Improvement", "Students", colorsSemi);
-
+    createScatterChart(container, "scatterChart", s => getTotalDistance(s), "Total Distance", s => lastWeekImprovement(s), "Improvement", "Students");
+    
     const datasets = top.topStudents.map((s, i) => ({
         label: s.name,
         data: s.cumulativeDistances,
-        borderColor: colorsSolid,
-        backgroundColor: "transparent",
+        borderColor: s.color,
+        backgroundColor: s.color,
         tension: 0.2,
         fill: false
     }));
@@ -1054,8 +1191,8 @@ function updateRankedTotalCharts(topN = 10) {
     const weeklyDatasets = top.topStudents.map((s, i) => ({
         label: s.name,
         data: s.weeklyDistances,
-        borderColor: colorsSolid,
-        backgroundColor: "transparent",
+        borderColor: s.color,
+        backgroundColor: s.color,
         tension: 0.2,
         fill: false
     }));
@@ -1072,7 +1209,7 @@ function updateRankedTotalCharts(topN = 10) {
 
     // --- Pie Chart: Top Students ---
 
-    createTopPieChart(container, "topPieChart", top.topNames, top.topDistances, `Top ${topN} Students % of Total`, "Distance", colorsSolid, colorsSemi);
+    createTopPieChart(container, "topPieChart", top.topNames, top.topDistances, `Top ${topN} Students % of Total`, "Distance");
 }
 
 function updateTotalAverageCharts(topN = 10) {
@@ -1080,19 +1217,16 @@ function updateTotalAverageCharts(topN = 10) {
     container.innerHTML = "";
 
     const top = createTopStudents(topN, s => s.averageDistance);
-
-    const colorsSolid = generateColors(topN, 0.7);
-    const colorsSemi = generateColors(topN, 0.5);
         
     // --- Horizontal Bar: Top 10 Students ---
 
-    createTopBarChart(container, "topBarChart", top.topNames, top.topDistances, `Top ${topN} Students Average Distance`, "Distances", colorsSolid, colorsSemi);
+    createTopBarChart(container, "topBarChart", top.topNames, top.topDistances, `Top ${topN} Students Average Distance`, "Distances");
 
     // --- Scatter Plot: Distance vs Improvement ---
-    createScatterChart(container, "scatterChart", s => getAverageDistance(s), "Average Distance", s => lastWeekImprovement(s), "Improvement", "Students", colorsSemi);
+    createScatterChart(container, "scatterChart", s => getAverageDistance(s), "Average Distance", s => lastWeekImprovement(s), "Improvement", "Students");
         // --- Pie Chart: Top 10 Students ---
 
-    createTopPieChart(container, "topPieChart", top.topNames, top.topDistances, `Top ${topN} Students % of Total`, "Distance", colorsSolid, colorsSemi);
+    createTopPieChart(container, "topPieChart", top.topNames, top.topDistances, `Top ${topN} Students % of Total`, "Distance");
 
 }
 
@@ -1102,16 +1236,13 @@ function updateTotalMaxCharts(topN = 10) {
 
     const top = createTopStudents(topN, s => s.maxDistance);
 
-    const colorsSolid = generateColors(topN, 0.7);
-    const colorsSemi = generateColors(topN, 0.5);
-
     // --- Horizontal Bar: Top 10 Students ---
 
-    createTopBarChart(container, "topBarChart", top.topNames, top.topDistances, `Top ${topN} Students`, "Distances", colorsSolid, colorsSemi);
+    createTopBarChart(container, "topBarChart", top.topNames, top.topDistances, `Top ${topN} Students`, "Distances");
 
     // --- Scatter Plot: Distance vs Total Distance ---
 
-    createScatterChart(container, "scatterChart", s => getMaxDistance(s).distance, "Max Distance", s => getTotalDistance(s), "Total Distance", "Students", colorsSemi);
+    createScatterChart(container, "scatterChart", s => getMaxDistance(s).distance, "Max Distance", s => getTotalDistance(s), "Total Distance", "Students");
 }
 
 function updateTotalMinCharts(topN = 10) {
@@ -1120,16 +1251,13 @@ function updateTotalMinCharts(topN = 10) {
 
     const top = createTopStudents(topN, s => s.minDistance);
 
-    const colorsSolid = generateColors(topN, 0.7);
-    const colorsSemi = generateColors(topN, 0.5);
-
     // --- Horizontal Bar: Top 10 Students ---
 
-    createTopBarChart(container, "topBarChart", top.topNames, top.topDistances, `Top ${topN} Students`, "Distances", colorsSolid, colorsSemi);
+    createTopBarChart(container, "topBarChart", top.topNames, top.topDistances, `Top ${topN} Students`, "Distances");
 
     // --- Scatter Plot: Distance vs Total Distance ---
 
-    createScatterChart(container, "scatterChart", s => getMinDistance(s).distance, "Min Distance", s => getTotalDistance(s), "Total Distance", "Students", colorsSemi);
+    createScatterChart(container, "scatterChart", s => getMinDistance(s).distance, "Min Distance", s => getTotalDistance(s), "Total Distance", "Students");
 }
 
 function updateTotalWeeksCharts(topN = 10) {
@@ -1138,16 +1266,13 @@ function updateTotalWeeksCharts(topN = 10) {
 
     const top = createTopStudents(topN, s => s.weeksAboveThreshold);
 
-    const colorsSolid = generateColors(topN, 0.7);
-    const colorsSemi = generateColors(topN, 0.5);
-
     // --- Horizontal Bar: Top 10 Students ---
 
-    createTopBarChart(container, "topBarChart", top.topNames, top.topDistances, `Top ${topN} Students`, "Weeks Above Threshold", colorsSolid, colorsSemi);
+    createTopBarChart(container, "topBarChart", top.topNames, top.topDistances, `Top ${topN} Students`, "Weeks Above Threshold");
 
     // --- Scatter Plot ---
 
-    createScatterChart(container, "scatterChart", s => weeksAboveThreshold(s), "Weeks Above Threshold", s => getTotalDistance(s), "Total Distance", "Students", colorsSemi);
+    createScatterChart(container, "scatterChart", s => weeksAboveThreshold(s), "Weeks Above Threshold", s => getTotalDistance(s), "Total Distance", "Students");
 }
 
 function createCategoryChart(categoryKey) {
@@ -1221,9 +1346,14 @@ function createCategoryChart(categoryKey) {
     const weekNames = getDistanceKeys(students[0]).map(k => k.replace("Distance_", ""));
 
     const datasets = sortedCategory.map((c, i) => {
-        const color = categoryKey === "House"
-            ? (HOUSECOLORS[c.name] || "#7f8c8d")
-            : generateColors(sortedCategory.length, 1)[i];
+        let color = "rgba(0, 0, 0, 0.7)"
+        if (categoryKey === "House") {
+            color = HOUSECOLORS[c.name];
+        } else if (categoryKey === "Gender") {
+            color = GENDERCOLORS[c.name];
+        } else if (categoryKey === "Grade") {
+            color = GRADECOLORS[c.name];
+        }
 
         return {
             label: c.name,
@@ -1250,9 +1380,14 @@ function createCategoryChart(categoryKey) {
         const distanceKeys = getDistanceKeys(students[0]);
         const totalsPerWeek = calculateTotalsPerDate(group, distanceKeys);
 
-        const color = categoryKey === "House"
-            ? (HOUSECOLORS[c.name] || "#7f8c8d")
-            : generateColors(sortedCategory.length, 1)[i];
+        let color = "rgba(0, 0, 0, 0.7)"
+        if (categoryKey === "House") {
+            color = HOUSECOLORS[c.name];
+        } else if (categoryKey === "Gender") {
+            color = GENDERCOLORS[c.name];
+        } else if (categoryKey === "Grade") {
+            color = GRADECOLORS[c.name];
+        }
 
         return {
             label: c.name,
