@@ -1,61 +1,61 @@
-Name,Gender,Type,Grade,House,Distance_Aug 15,Distance_Aug 22,Distance_Aug 29,Distance_Sep 5,Distance_Sep 19
-Dino Wang,Male,Student,12,Wolfpack,2.67,3.5,4.57,5,0
-Matthew Choi,Male,Student,11,Wolfpack,10.33,10.5,8.57,8.43,9.57
-William Chang,Male,Student,11,Wolfpack,6.33,7,2.43,6.29,5.71
-Filippe Chieh,Male,Student,10,Wolfpack,3.83,5.83,4.43,2.29,0
-Luke Liang,Male,Student,10,Wolfpack,6.17,6.83,6.29,3.86,2.14
-Happy Duan,Male,Student,10,Wolfpack,8.33,0,4.43,3.43,2
-Jolie Lin,Female,Student,12,Wolfpack,3.83,6.83,0,0,3.71
-Hinako Tai,Female,Student,11,Wolfpack,7.17,8,7.43,6.86,5.14
-Steffi Tsai,Female,Student,11,Wolfpack,3,5.67,0,2.29,3.57
-Cheryl Lee,Female,Student,11,Wolfpack,6.5,6.83,2.86,3,4.29
-Hailey Chu,Female,Student,9,Wolfpack,7.33,7.83,0,5.86,0
-Alisa Spapen,Female,Student,9,Wolfpack,0,0,2.86,3.14,3.57
-Michael Brannaka,Male,Teacher,Teacher,Wolfpack,13.33,6.5,10.57,7.57,10.29
-Sam Yeong,Male,Teacher,Teacher,Wolfpack,3.33,2.83,0,2.29,3.14
-Iris Lu,Female,Teacher,Teacher,Wolfpack,4.17,4,0,0,3.57
-Leo Li,Male,Student,11,Gator Nation,12.17,7.33,11.71,6,2.14
-Satoru Kumazawa,Male,Student,11,Gator Nation,5.67,9.5,9.14,5.86,3.29
-Andy Li,Male,Student,11,Gator Nation,4.83,4.33,4.57,3.71,3.71
-Yasin Pieterse,Male,Student,10,Gator Nation,5.17,5.67,0,0,4.43
-Anakin Lee,Male,Student,9,Gator Nation,4.33,0,0,4,0
-Larissa Kuo,Female,Student,12,Gator Nation,6.17,6.33,3.71,2.57,3.71
-Renee Wu,Female,Student,11,Gator Nation,2.83,5.33,2.14,2.71,3.71
-Yuna Wu,Female,Student,12,Gator Nation,6.33,6.67,5.29,3,3.86
-Bella Jiang,Female,Student,9,Gator Nation,2.67,5.5,3.71,2.29,3.14
-Elizabeth Farrow,Female,Student,9,Gator Nation,3.17,3.67,4,2.43,2.71
-Alisa Lee,Female,Student,9,Gator Nation,3.5,5,4.71,3.43,4.57
-Gene Tseng,Male,Teacher,Teacher,Gator Nation,4.5,0,9.14,9.29,3.57
-Esther Krushnisky,Female,Teacher,Teacher,Gator Nation,4.5,4.67,8,3.29,2.71
-Izumi Fukumoto,Female,Student,10,Gator Nation,0,0,0,6.43,7.57
-Wawa Wang,Female,Teacher,Teacher,Gator Nation,6.5,3,0,2,2
-Shota Fukumoto,Male,Student,12,Blue Tang,5,8.83,11.14,5.14,12
-William Lee,Male,Student,11,Blue Tang,10,5.67,8,8.71,3.57
-Kuan Jian,Male,Student,11,Blue Tang,8,8.83,4,2.14,4.43
-Camden Johnson,Male,Student,9,Blue Tang,9.17,9.5,9.14,8.57,2.14
-Anderson Lu,Male,Student,10,Blue Tang,2.33,4,3.57,3.29,2.14
-Aaron Yu,Male,Student,10,Blue Tang,10,4.17,5,3,2.14
-Rebecca Chen,Female,Student,11,Blue Tang,0,7,0,2.71,3
-Jasmine Kuan,Female,Student,11,Blue Tang,6.83,5.33,2,2.71,3.43
-Miu Yoshii,Female,Student,12,Blue Tang,7.5,8,4.14,7.29,5.57
-Stella Liao,Female,Student,10,Blue Tang,7.5,7.5,3.29,4.29,4
-Connie Huang,Female,Student,11,Blue Tang,0,4,0,2,3
-Jennifer Lee,Female,Student,11,Blue Tang,5.83,5.17,6,5.29,3.43
-Jason Van Schooneveld,Male,Teacher,Teacher,Blue Tang,10.33,9.67,9.71,8.14,2.29
-Nina Feng,Female,Teacher,Teacher,Blue Tang,0,0,0,0,0
-Jathrena Sikol,Female,Teacher,Teacher,Blue Tang,6,4,4.29,5.71,0
-Chiung Wu,Male,Student,11,Swarm,7.67,13.17,12.57,10.86,3.14
-Samuel Teoh,Male,Student,12,Swarm,12,12.17,12.43,10.71,12.29
-Zack Chen,Male,Student,12,Swarm,3.33,6.67,4,4,7
-Allen Jiang,Male,Student,11,Swarm,5.83,5.83,5.29,5.57,4.86
-Joey Tsai,Male,Student,10,Swarm,4.67,6.17,3.43,3.71,4.86
-Moroni Chen,Male,Student,10,Swarm,2,0,2.57,0,2.14
-Brandon Chen,Male,Student,10,Swarm,5.83,8.67,10.43,9.86,10.29
-Liz Aoyama,Female,Student,12,Swarm,0,6,0,0,3.43
-Lillian Lin,Female,Student,11,Swarm,5.5,5.5,2.14,0,2.86
-Phoebe Lee,Female,Student,11,Swarm,8.67,8.83,9,8.57,6.43
-Hana Sato,Female,Student,12,Swarm,6.17,6,3.14,3.71,3.43
-Ayu Ogura,Female,Student,12,Swarm,11.16,9.67,3.14,5.43,7.14
-Mark Harper,Male,Teacher,Teacher,Swarm,8.17,7,4.43,7.43,4.29
-Ashley Fan,Female,Teacher,Teacher,Swarm,5.67,4,3,4.71,2.86
-Ayomi Pheirim,Male,Teacher,Teacher,Swarm,0,0,0,0,0
+Name,Gender,Type,Grade,House,Distance_Aug 15,Distance_Aug 22,Distance_Aug 29,Distance_Sep 5,Distance_Sep 19,Distance_Oct 3
+Dino Wang,Male,Student,12,Wolfpack,2.67,3.5,4.57,5,0,0
+Matthew Choi,Male,Student,11,Wolfpack,10.33,10.5,8.57,8.43,9.57,8.43
+William Chang,Male,Student,11,Wolfpack,6.33,7,2.43,6.29,5.71,5.86
+Filippe Chieh,Male,Student,10,Wolfpack,3.83,5.83,4.43,2.29,0,0
+Luke Liang,Male,Student,10,Wolfpack,6.17,6.83,6.29,3.86,2.14,2.43
+Happy Duan,Male,Student,10,Wolfpack,8.33,0,4.43,3.43,2,0
+Jolie Lin,Female,Student,12,Wolfpack,3.83,6.83,0,0,3.71,4
+Hinako Tai,Female,Student,11,Wolfpack,7.17,8,7.43,6.86,5.14,5
+Steffi Tsai,Female,Student,11,Wolfpack,3,5.67,0,2.29,3.57,3
+Cheryl Lee,Female,Student,11,Wolfpack,6.5,6.83,2.86,3,4.29,4.43
+Hailey Chu,Female,Student,9,Wolfpack,7.33,7.83,0,5.86,0,5.57
+Alisa Spapen,Female,Student,9,Wolfpack,0,0,2.86,3.14,3.57,3
+Michael Brannaka,Male,Teacher,Teacher,Wolfpack,13.33,6.5,10.57,7.57,10.29,3.86
+Sam Yeong,Male,Teacher,Teacher,Wolfpack,3.33,2.83,0,2.29,3.14,0
+Iris Lu,Female,Teacher,Teacher,Wolfpack,4.17,4,0,0,3.57,0
+Leo Li,Male,Student,11,Gator Nation,12.17,7.33,11.71,6,2.14,2.14
+Satoru Kumazawa,Male,Student,11,Gator Nation,5.67,9.5,9.14,5.86,3.29,3.29
+Andy Li,Male,Student,11,Gator Nation,4.83,4.33,4.57,3.71,3.71,4.43
+Yasin Pieterse,Male,Student,10,Gator Nation,5.17,5.67,0,0,4.43,3
+Anakin Lee,Male,Student,9,Gator Nation,4.33,0,0,4,0,0
+Larissa Kuo,Female,Student,12,Gator Nation,6.17,6.33,3.71,2.57,3.71,3
+Renee Wu,Female,Student,11,Gator Nation,2.83,5.33,2.14,2.71,3.71,3.43
+Yuna Wu,Female,Student,12,Gator Nation,6.33,6.67,5.29,3,3.86,3.14
+Bella Jiang,Female,Student,9,Gator Nation,2.67,5.5,3.71,2.29,3.14,4.43
+Elizabeth Farrow,Female,Student,9,Gator Nation,3.17,3.67,4,2.43,2.71,3.43
+Alisa Lee,Female,Student,9,Gator Nation,3.5,5,4.71,3.43,4.57,5.14
+Gene Tseng,Male,Teacher,Teacher,Gator Nation,4.5,0,9.14,9.29,3.57,0
+Esther Krushnisky,Female,Teacher,Teacher,Gator Nation,4.5,4.67,8,3.29,2.71,2
+Izumi Fukumoto,Female,Student,10,Gator Nation,0,0,0,6.43,7.57,6.14
+Wawa Wang,Female,Teacher,Teacher,Gator Nation,6.5,3,0,2,2,0
+Shota Fukumoto,Male,Student,12,Blue Tang,5,8.83,11.14,5.14,12,0
+William Lee,Male,Student,11,Blue Tang,10,5.67,8,8.71,3.57,8.14
+Kuan Jian,Male,Student,11,Blue Tang,8,8.83,4,2.14,4.43,0
+Camden Johnson,Male,Student,9,Blue Tang,9.17,9.5,9.14,8.57,2.14,7.14
+Anderson Lu,Male,Student,10,Blue Tang,2.33,4,3.57,3.29,2.14,0
+Aaron Yu,Male,Student,10,Blue Tang,10,4.17,5,3,2.14,5.27
+Rebecca Chen,Female,Student,11,Blue Tang,0,7,0,2.71,3,2.57
+Jasmine Kuan,Female,Student,11,Blue Tang,6.83,5.33,2,2.71,3.43,4.71
+Miu Yoshii,Female,Student,12,Blue Tang,7.5,8,4.14,7.29,5.57,4.29
+Stella Liao,Female,Student,10,Blue Tang,7.5,7.5,3.29,4.29,4,4.29
+Connie Huang,Female,Student,11,Blue Tang,0,4,0,2,3,2.14
+Jennifer Lee,Female,Student,11,Blue Tang,5.83,5.17,6,5.29,3.43,4.29
+Jason Van Schooneveld,Male,Teacher,Teacher,Blue Tang,10.33,9.67,9.71,8.14,2.29,8.14
+Nina Feng,Female,Teacher,Teacher,Blue Tang,0,0,0,0,0,0
+Jathrena Sikol,Female,Teacher,Teacher,Blue Tang,6,4,4.29,5.71,0,0
+Chiung Wu,Male,Student,11,Swarm,7.67,13.17,12.57,10.86,3.14,4
+Samuel Teoh,Male,Student,12,Swarm,12,12.17,12.43,10.71,12.29,11.71
+Zack Chen,Male,Student,12,Swarm,3.33,6.67,4,4,7,6
+Allen Jiang,Male,Student,11,Swarm,5.83,5.83,5.29,5.57,4.86,5.43
+Joey Tsai,Male,Student,10,Swarm,4.67,6.17,3.43,3.71,4.86,4
+Moroni Chen,Male,Student,10,Swarm,2,0,2.57,0,2.14,2
+Brandon Chen,Male,Student,10,Swarm,5.83,8.67,10.43,9.86,10.29,8.71
+Liz Aoyama,Female,Student,12,Swarm,0,6,0,0,3.43,3.86
+Lillian Lin,Female,Student,11,Swarm,5.5,5.5,2.14,0,2.86,2.71
+Phoebe Lee,Female,Student,11,Swarm,8.67,8.83,9,8.57,6.43,6.14
+Hana Sato,Female,Student,12,Swarm,6.17,6,3.14,3.71,3.43,3.86
+Ayu Ogura,Female,Student,12,Swarm,11.16,9.67,3.14,5.43,7.14,6.43
+Mark Harper,Male,Teacher,Teacher,Swarm,8.17,7,4.43,7.43,4.29,3.29
+Ashley Fan,Female,Teacher,Teacher,Swarm,5.67,4,3,4.71,2.86,2
+Ayomi Pheirim,Male,Teacher,Teacher,Swarm,0,0,0,0,0,0
