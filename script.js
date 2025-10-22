@@ -1411,7 +1411,9 @@ function createCategoryChart(categoryKey) {
 }
 
 function loadData(year, callback) {
-    fetch(`data-${year}.csv`)
+    let csvUrl = `https://docs.google.com/spreadsheets/d/e/2PACX-1vRMXMR13uMKs85VZrY8PoCDnR3Mnc6KVhUpz6V16cCt8y-MMP2MMuYonpTKFUFGfDvFGkcu279PlgPX/pub?output=csv&gid=${getGidForYear(year)}`
+    
+    fetch(csvUrl)
         .then(response => response.text())
         .then(csvText => {
             const lines = csvText.trim().split("\n");
@@ -1436,4 +1438,12 @@ function loadData(year, callback) {
 
             if (callback) callback();
         });
+}
+
+function getGidForYear(year) {
+    const gidMap = {
+        2024: "1713126750",
+        2025: "524788319",
+    };
+    return gidMap[year] || "524788319";
 }
